@@ -1,0 +1,41 @@
+[
+  {
+    "id": "chene-massif",
+    "type": "material",
+    "name": "Chêne Massif",
+    "category": "Bois",
+    "contact": "Bois & Nature",
+    "price": "245€/m²",
+    "description": "Bois de chêne massif naturel de première qualité",
+    "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23a0826d' width='400' height='300'/%3E%3C/svg%3E",
+    "favorite": true,
+    "createdAt": 1738598400000,
+    "updatedAt": 1738598400000
+  },
+  {
+    "id": "marbre-calacatta",
+    "type": "material",
+    "name": "Marbre Calacatta",
+    "category": "Pierre",
+    "contact": "Marbre Prestige",
+    "price": "580€/m²",
+    "description": "Marbre italien avec veines dorées caractéristiques",
+    "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23f5f5f0' width='400' height='300'/%3E%3C/svg%3E",
+    "favorite": false,
+    "createdAt": 1738598400000,
+    "updatedAt": 1738598400000
+  },
+  {
+    "id": "acier-inox",
+    "type": "material",
+    "name": "Acier Inoxydable",
+    "category": "Métal",
+    "contact": "Métal Concept",
+    "price": "180€/m²",
+    "description": "Acier inoxydable 304 brossé haute qualité",
+    "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23b8c5d6' width='400' height='300'/%3E%3C/svg%3E",
+    "favorite": false,
+    "createdAt": 1738598400000,
+    "updatedAt": 1738598400000
+  }
+]
