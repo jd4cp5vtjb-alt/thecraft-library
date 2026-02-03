@@ -9,8 +9,9 @@
 <meta name="apple-mobile-web-app-title" content="TheCraft Library">
 <meta name="msapplication-TileColor" content="#1E3A8A">
 <meta name="theme-color" content="#1E3A8A">
-<link rel="apple-touch-icon" href="icon.png">
-<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <title>TheCraft Library</title>
 <style>
 :root {
@@ -175,6 +176,7 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
   <span></span>
 </button>
 <div class="menu-dropdown" id="menu">
+  <div class="menu-item" id="syncBtn">🔄 Synchroniser</div>
   <div class="menu-item" id="exportBtn">📤 Exporter</div>
   <div class="menu-item" id="importBtn">📥 Importer</div>
   <div class="menu-item" id="favBtn">❤️ Favoris</div>
@@ -359,13 +361,55 @@ let uploadedImageUrl = '';
 let editingId = null;
 
 function init() {
+  loadFromStorage();
   loadDaily();
   render();
   setupEvents();
 }
 
+async function loadFromStorage() {
+  let githubLoaded = false;
+  
+  // 1. Charger matériaux depuis GitHub
+  try {
+    const resMat = await fetch('https://raw.githubusercontent.com/jd4cp5vtjb-alt/thecraft-library/main/materials.json');
+    if (resMat.ok) {
+      const materials = await resMat.json();
+      
+      // 2. Charger fournisseurs depuis GitHub
+      const resSup = await fetch('https://raw.githubusercontent.com/jd4cp5vtjb-alt/thecraft-library/main/suppliers.json');
+      if (resSup.ok) {
+        const suppliers = await resSup.json();
+        
+        // Combiner les 2 bases
+        items = [...materials, ...suppliers];
+        localStorage.setItem('thecraft-items', JSON.stringify(items));
+        console.log('✅ Données GitHub:', materials.length, 'matériaux +', suppliers.length, 'fournisseurs');
+        githubLoaded = true;
+        render();
+      }
+    }
+  } catch (e) {
+    console.log('⚠️ GitHub non accessible, chargement local...');
+  }
+  
+  // 3. Fallback : charger depuis localStorage
+  if (!githubLoaded) {
+    const stored = localStorage.getItem('thecraft-items');
+    if (stored) {
+      try {
+        items = JSON.parse(stored);
+        console.log('✅ Données localStorage:', items.length, 'items');
+      } catch (e) {
+        console.error('❌ Erreur chargement:', e);
+      }
+    }
+  }
+}
+
 function setupEvents() {
   document.getElementById('menuBtn').addEventListener('click', toggleMenu);
+  document.getElementById('syncBtn').addEventListener('click', syncToGitHub);
   document.getElementById('exportBtn').addEventListener('click', exportData);
   document.getElementById('importBtn').addEventListener('click', importData);
   document.getElementById('favBtn').addEventListener('click', openFavoritesModal);
@@ -895,16 +939,81 @@ function editItem(id) {
   document.getElementById('addModal').classList.add('active');
 }
 
+async function syncToGitHub() {
+  toggleMenu();
+  
+  // Séparer matériaux et fournisseurs
+  const materials = items.filter(i => i.type === 'material');
+  const suppliers = items.filter(i => i.type === 'supplier');
+  
+  // Afficher un message de chargement
+  const originalText = document.body.innerHTML;
+  const loadingDiv = document.createElement('div');
+  loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.9);color:#fff;padding:40px;border-radius:20px;z-index:9999;text-align:center;';
+  loadingDiv.innerHTML = '<h2>🔄 Synchronisation...</h2><p style="margin-top:10px;opacity:0.8;">Envoi des données à GitHub</p>';
+  document.body.appendChild(loadingDiv);
+  
+  try {
+    const response = await fetch('https://api.github.com/repos/jd4cp5vtjb-alt/thecraft-library/dispatches', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/vnd.github.v3+json',
+        'Authorization': 'Bearer ghp_METTRE_TON_TOKEN_ICI',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        event_type: 'sync-data',
+        client_payload: {
+          materials: JSON.stringify(materials, null, 2),
+          suppliers: JSON.stringify(suppliers, null, 2)
+        }
+      })
+    });
+    
+    document.body.removeChild(loadingDiv);
+    
+    if (response.status === 204) {
+      alert('✅ Synchronisation réussie !\n\n📦 ' + materials.length + ' matériaux\n🏢 ' + suppliers.length + ' fournisseurs\n\nLes fichiers GitHub seront mis à jour dans 30 secondes.');
+    } else {
+      throw new Error('Erreur: ' + response.status);
+    }
+  } catch (error) {
+    document.body.removeChild(loadingDiv);
+    alert('❌ Erreur de synchronisation\n\n' + error.message + '\n\nVérifie que ton token GitHub est bien configuré dans le code (ligne avec ghp_...)');
+    console.error('Erreur sync:', error);
+  }
+}
+
 function exportData() {
-  const blob = new Blob([JSON.stringify(items,null,2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'thecraft-backup.json';
-  a.click();
-  URL.revokeObjectURL(url);
+  // Séparer matériaux et fournisseurs
+  const materials = items.filter(i => i.type === 'material');
+  const suppliers = items.filter(i => i.type === 'supplier');
+  
+  // Créer materials.json
+  const blobMat = new Blob([JSON.stringify(materials,null,2)], {type:'application/json'});
+  const urlMat = URL.createObjectURL(blobMat);
+  const aMat = document.createElement('a');
+  aMat.href = urlMat;
+  aMat.download = 'materials.json';
+  aMat.click();
+  URL.revokeObjectURL(urlMat);
+  
+  // Créer suppliers.json (avec un petit délai)
+  setTimeout(() => {
+    const blobSup = new Blob([JSON.stringify(suppliers,null,2)], {type:'application/json'});
+    const urlSup = URL.createObjectURL(blobSup);
+    const aSup = document.createElement('a');
+    aSup.href = urlSup;
+    aSup.download = 'suppliers.json';
+    aSup.click();
+    URL.revokeObjectURL(urlSup);
+    
+    alert('✅ 2 fichiers exportés :\n📦 materials.json (' + materials.length + ' items)\n🏢 suppliers.json (' + suppliers.length + ' items)');
+  }, 500);
+  
   toggleMenu();
 }
+
 
 function importData() {
   const input = document.createElement('input');
@@ -917,10 +1026,12 @@ function importData() {
     reader.onload = ev => {
       try {
         items = JSON.parse(ev.target.result);
+        localStorage.setItem('thecraft-items', JSON.stringify(items));
         render();
-        alert('✅ Importé !');
+        alert('✅ ' + items.length + ' items importés !');
       } catch(err) {
-        alert('❌ Erreur');
+        alert('❌ Erreur: fichier JSON invalide');
+        console.error(err);
       }
     };
     reader.readAsText(file);
