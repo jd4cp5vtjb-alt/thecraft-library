@@ -5,7 +5,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>TheCraft Library V8</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TheCraft">
+<meta name="msapplication-TileColor" content="#1E3A8A">
+<meta name="theme-color" content="#1E3A8A">
+<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icon.png">
+<title>TheCraft Library</title>
 <style>
 :root {
   --bg-start: #1E3A8A;
@@ -36,16 +43,16 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
 
 .h-card { min-width:280px; height:340px; border-radius:24px; background:var(–card-bg); backdrop-filter:blur(20px); position:relative; cursor:pointer; transition:transform 0.3s; overflow:hidden; flex-shrink:0; }
 .h-card:hover { transform:translateY(-6px); }
-.h-card img { width:100%; height:100%; object-fit:cover; }
-.h-card .overlay { position:absolute; bottom:0; left:0; right:0; padding:24px 20px; background:linear-gradient(to top, rgba(0,0,0,0.85), transparent); }
+.h-card img { width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; display:block; }
+.h-card .overlay { position:absolute; bottom:0; left:0; right:0; padding:24px 20px; background:linear-gradient(to top, rgba(0,0,0,0.85), transparent); z-index:1; }
 .h-card h3 { font-size:1.3em; font-weight:800; }
 .h-card .tag { font-size:0.7em; background:rgba(255,255,255,0.25); padding:5px 10px; border-radius:8px; display:inline-block; margin-bottom:8px; }
 
 .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; padding:0 20px; margin-bottom:32px; }
-.card { min-height:340px; border-radius:24px; background:var(–card-bg); backdrop-filter:blur(20px); position:relative; cursor:pointer; transition:transform 0.3s; overflow:hidden; }
+.card { min-height:340px; height:340px; border-radius:24px; background:var(–card-bg); backdrop-filter:blur(20px); position:relative; cursor:pointer; transition:transform 0.3s; overflow:hidden; }
 .card:hover { transform:translateY(-6px); }
-.card img { width:100%; height:100%; object-fit:cover; }
-.card .overlay { position:absolute; bottom:0; left:0; right:0; padding:28px 20px; background:linear-gradient(to top, rgba(0,0,0,0.85), transparent); }
+.card img { width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; display:block; }
+.card .overlay { position:absolute; bottom:0; left:0; right:0; padding:28px 20px; background:linear-gradient(to top, rgba(0,0,0,0.85), transparent); z-index:1; }
 .card h3 { font-size:1.5em; font-weight:800; }
 .card .tag { font-size:0.7em; background:rgba(255,255,255,0.2); padding:5px 10px; border-radius:8px; display:inline-block; margin-bottom:8px; }
 
@@ -63,10 +70,10 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
 @media (min-width:600px) { .pinterest { column-count:3; } }
 .pint-item { break-inside:avoid; margin-bottom:16px; background:var(–card-bg); backdrop-filter:blur(20px); border-radius:20px; overflow:hidden; cursor:pointer; display:inline-block; width:100%; position:relative; transition:transform 0.3s; }
 .pint-item:hover { transform:translateY(-6px); }
-.pint-item img { width:100%; display:block; object-fit:cover; }
+.pint-item img { width:100%; display:block; object-fit:cover; min-height:180px; max-height:280px; }
 .pint-item.tall img { height:280px; }
 .pint-item.short img { height:180px; }
-.pint-item .info { padding:14px; }
+.pint-item .info { padding:14px; background:var(–card-bg); backdrop-filter:blur(20px); }
 .pint-item h3 { font-size:1em; font-weight:700; margin-bottom:8px; }
 .pint-item .tag { background:rgba(59,130,246,0.25); padding:5px 11px; border-radius:8px; font-size:0.7em; color:#fff; font-weight:600; display:inline-block; margin-bottom:6px; }
 .pint-item .price { font-size:0.9em; font-weight:700; margin-top:6px; background:rgba(255,255,255,0.2); padding:6px 12px; border-radius:8px; display:inline-block; }
@@ -76,9 +83,9 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
 .discover .scroll { overflow-x:auto; }
 .discover .scroll::-webkit-scrollbar { display:none; }
 .discover .list { display:flex; gap:16px; padding:0 20px; }
-.disc-card { min-width:240px; height:280px; border-radius:20px; background:var(–card-bg); backdrop-filter:blur(20px); position:relative; cursor:pointer; overflow:hidden; transition:transform 0.3s; flex-shrink:0; }
+.disc-card { min-width:240px; width:240px; height:280px; border-radius:20px; background:var(–card-bg); backdrop-filter:blur(20px); position:relative; cursor:pointer; overflow:hidden; transition:transform 0.3s; flex-shrink:0; }
 .disc-card:hover { transform:translateY(-4px); }
-.disc-card img { width:100%; height:100%; object-fit:cover; }
+.disc-card img { width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; display:block; }
 .disc-card .name { position:absolute; bottom:0; left:0; right:0; padding:20px 16px; background:linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
 .disc-card h4 { font-size:1.1em; font-weight:700; }
 
