@@ -8,21 +8,21 @@
 <title>TheCraft Library V3</title>
 <style>
 :root {
-  --bg-start: #4A9EFF;
-  --bg-end: #A8D5FF;
-  --card-bg: rgba(255,255,255,0.2);
-  --text: #FFFFFF;
-  --shadow: rgba(0,0,0,0.15);
+  --bg-start: #FFFFFF;
+  --bg-end: #F5F5F5;
+  --card-bg: rgba(255,255,255,0.6);
+  --text: #1C1C1E;
+  --shadow: rgba(0,0,0,0.1);
 }
 * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,sans-serif; }
 body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-height:100vh; color:var(--text); padding-bottom:100px; }
 
-.menu-btn { position:fixed; top:20px; right:20px; width:44px; height:44px; background:rgba(255,255,255,0.2); backdrop-filter:blur(20px); border-radius:50%; border:none; cursor:pointer; z-index:1000; display:flex; flex-direction:column; gap:5px; align-items:center; justify-content:center; }
-.menu-btn span { width:20px; height:2.5px; background:#fff; border-radius:2px; }
-.menu-dropdown { position:fixed; top:75px; right:20px; background:rgba(255,255,255,0.25); backdrop-filter:blur(30px); border-radius:16px; padding:8px; z-index:999; display:none; min-width:180px; }
+.menu-btn { position:fixed; top:20px; right:20px; width:44px; height:44px; background:rgba(0,0,0,0.08); backdrop-filter:blur(20px); border-radius:50%; border:none; cursor:pointer; z-index:1000; display:flex; flex-direction:column; gap:5px; align-items:center; justify-content:center; }
+.menu-btn span { width:20px; height:2.5px; background:#1C1C1E; border-radius:2px; }
+.menu-dropdown { position:fixed; top:75px; right:20px; background:rgba(255,255,255,0.95); backdrop-filter:blur(30px); border-radius:16px; padding:8px; z-index:999; display:none; min-width:180px; box-shadow:0 8px 32px rgba(0,0,0,0.08); border:1px solid rgba(0,0,0,0.06); }
 .menu-dropdown.active { display:block; }
-.menu-item { padding:12px 16px; border-radius:10px; cursor:pointer; color:#fff; font-weight:600; }
-.menu-item:hover { background:rgba(255,255,255,0.2); }
+.menu-item { padding:12px 16px; border-radius:10px; cursor:pointer; color:#1C1C1E; font-weight:600; }
+.menu-item:hover { background:rgba(0,0,0,0.05); }
 
 .page-header { padding:24px 20px 8px; }
 .page-subtitle { font-size:0.8em; opacity:0.85; text-transform:uppercase; letter-spacing:1.2px; margin-bottom:6px; }
@@ -87,7 +87,7 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
 .tab-item svg { width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:2.5; }
 .tab-item span { font-size:0.65em; margin-top:6px; font-weight:600; }
 
-.fab { position:fixed; bottom:120px; right:24px; width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, #4A9EFF, #60A5FA); border:none; color:#fff; font-size:28px; cursor:pointer; z-index:99; box-shadow:0 8px 32px rgba(74,158,255,0.4); }
+.fab { position:fixed; bottom:120px; right:24px; width:60px; height:60px; border-radius:50%; background:rgba(255,255,255,0.3); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid rgba(0,0,0,0.08); color:#1C1C1E; font-size:28px; cursor:pointer; z-index:99; box-shadow:0 8px 32px rgba(0,0,0,0.1); }
 .fab:active { transform:scale(0.95); }
 
 .tab-content { display:none; }
@@ -120,6 +120,12 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
 .type-btn.active { border-color:#4A9EFF; background:rgba(74,158,255,0.15); color:#4A9EFF; }
 .submit-btn { width:100%; padding:18px; background:linear-gradient(135deg, #4A9EFF, #60A5FA); color:#fff; border:none; border-radius:16px; font-size:1.05em; font-weight:700; cursor:pointer; margin-top:12px; }
 .submit-btn:active { transform:scale(0.98); }
+.image-upload { border:2px dashed rgba(0,0,0,0.2); border-radius:14px; padding:32px; text-align:center; cursor:pointer; transition:all 0.3s; background:rgba(0,0,0,0.02); }
+.image-upload:hover { border-color:rgba(0,0,0,0.4); background:rgba(0,0,0,0.04); }
+.image-upload svg { color:rgba(0,0,0,0.3); margin-bottom:12px; }
+.image-upload p { color:rgba(0,0,0,0.5); font-size:0.95em; }
+.image-upload.has-image { border-style:solid; border-color:rgba(0,0,0,0.15); padding:0; background:transparent; }
+.image-upload.has-image img { width:100%; height:200px; object-fit:cover; border-radius:12px; }
 
 .favorites-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.3); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:3000; padding:40px 0 100px; }
 .favorites-modal.active { display:flex; align-items:center; justify-content:center; }
@@ -267,6 +273,19 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
 
 <form id="addForm">
   <div class="form-group">
+    <label for="imageUpload">Photo</label>
+    <input type="file" id="imageUpload" accept="image/*" style="display:none;">
+    <div class="image-upload" id="imageUploadArea">
+      <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" fill="none" stroke-width="2">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+      <p>Ajouter une photo</p>
+    </div>
+  </div>
+
+  <div class="form-group">
     <label for="itemName">Nom *</label>
     <input type="text" id="itemName" required>
   </div>
@@ -276,14 +295,41 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
     <input type="text" id="itemCategory" placeholder="ex: Bois, Pierre, Métal...">
   </div>
 
-  <div class="form-group">
+  <!-- Champs pour MATÉRIAUX -->
+  <div class="form-group material-only">
     <label for="itemSupplier">Fournisseur</label>
-    <input type="text" id="itemSupplier" placeholder="ex: Bois & Nature, Marbre Prestige...">
+    <input type="text" id="itemSupplier" placeholder="ex: Bois & Nature">
   </div>
 
-  <div class="form-group">
+  <div class="form-group material-only">
     <label for="itemPrice">Prix</label>
     <input type="text" id="itemPrice" placeholder="ex: 150€/m²">
+  </div>
+
+  <div class="form-group material-only">
+    <label for="itemFinish">Finition</label>
+    <input type="text" id="itemFinish" placeholder="ex: Mat, Brillant, Satiné...">
+  </div>
+
+  <!-- Champs pour FOURNISSEURS -->
+  <div class="form-group supplier-only" style="display:none;">
+    <label for="itemPhone">Téléphone</label>
+    <input type="tel" id="itemPhone" placeholder="ex: +33 1 23 45 67 89">
+  </div>
+
+  <div class="form-group supplier-only" style="display:none;">
+    <label for="itemEmail">Email</label>
+    <input type="email" id="itemEmail" placeholder="ex: contact@fournisseur.fr">
+  </div>
+
+  <div class="form-group supplier-only" style="display:none;">
+    <label for="itemWebsite">Site web</label>
+    <input type="url" id="itemWebsite" placeholder="ex: https://www.fournisseur.fr">
+  </div>
+
+  <div class="form-group supplier-only" style="display:none;">
+    <label for="itemAddress">Adresse</label>
+    <input type="text" id="itemAddress" placeholder="ex: 123 Rue Example, Paris">
   </div>
 
   <div class="form-group">
@@ -291,7 +337,7 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
     <textarea id="itemDescription" placeholder="Description..."></textarea>
   </div>
 
-  <button type="submit" class="submit-btn">Créer</button>
+  <button type="submit" class="submit-btn" id="submitBtn">Créer</button>
 </form>
 ```
 
@@ -326,6 +372,9 @@ let items = [
 let daily = [];
 let activeCategorySuppliers = 'Tous';
 let activeCategoryMaterials = 'Tous';
+let selectedType = 'material';
+let uploadedImageUrl = '';
+let editingId = null;
 
 function init() {
   loadDaily();
@@ -346,12 +395,22 @@ function setupEvents() {
   document.getElementById('addForm').addEventListener('submit', submitForm);
   document.getElementById('closeFavorites').addEventListener('click', closeFavoritesModal);
   
+  // Upload d'image
+  document.getElementById('imageUploadArea').addEventListener('click', () => {
+    document.getElementById('imageUpload').click();
+  });
+  
+  document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
+  
   document.querySelectorAll('.tab-item[data-tab]').forEach(btn => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
 
   document.querySelectorAll('.type-btn').forEach(btn => {
-    btn.addEventListener('click', () => selectType(btn.dataset.type));
+    btn.addEventListener('click', () => {
+      selectedType = btn.dataset.type;
+      selectType(btn.dataset.type);
+    });
   });
 
   document.getElementById('addModal').addEventListener('click', e => {
@@ -716,7 +775,12 @@ function showDetailModal(itemId) {
   if (item.price) metaTags.push(`<span class="meta-tag">${item.price}</span>`);
   
   const details = [];
-  if (item.contact) details.push(`<p><strong>Contact :</strong> ${item.contact}</p>`);
+  if (item.contact) details.push(`<p><strong>Fournisseur :</strong> ${item.contact}</p>`);
+  if (item.phone) details.push(`<p><strong>Téléphone :</strong> ${item.phone}</p>`);
+  if (item.email) details.push(`<p><strong>Email :</strong> ${item.email}</p>`);
+  if (item.website) details.push(`<p><strong>Site web :</strong> <a href="${item.website}" target="_blank">${item.website}</a></p>`);
+  if (item.address) details.push(`<p><strong>Adresse :</strong> ${item.address}</p>`);
+  if (item.finish) details.push(`<p><strong>Finition :</strong> ${item.finish}</p>`);
   if (item.description) details.push(`<p><strong>Description :</strong> ${item.description}</p>`);
   
   body.innerHTML = `
@@ -727,65 +791,182 @@ function showDetailModal(itemId) {
       ${details.join('')}
     </div>
     <div class="detail-actions">
-      <button class="close-btn" onclick="closeDetailModal()">Fermer</button>
+      <button class="close-btn" id="editItemBtn">Modifier</button>
     </div>
   `;
   
   modal.classList.add('active');
+  
+  // Ajouter l'événement au bouton Modifier
+  setTimeout(() => {
+    const editBtn = document.getElementById('editItemBtn');
+    if (editBtn) {
+      editBtn.onclick = () => {
+        closeDetailModal();
+        editItem(item.id);
+      };
+    }
+  }, 0);
 }
 
 function closeDetailModal() {
   document.getElementById('detailModal').classList.remove('active');
 }
 
+function handleImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    uploadedImageUrl = event.target.result;
+    const uploadDiv = document.getElementById('imageUploadArea');
+    uploadDiv.innerHTML = `<img src="${uploadedImageUrl}" alt="Preview">`;
+    uploadDiv.classList.add('has-image');
+  };
+  reader.readAsDataURL(file);
+}
+
 function openAddForm() {
+  editingId = null;
+  selectedType = 'material';
+  uploadedImageUrl = '';
+  
+  document.getElementById('formTitle').textContent = 'Ajouter';
+  document.getElementById('submitBtn').textContent = 'Créer';
+  document.getElementById('addForm').reset();
+  
+  const uploadDiv = document.getElementById('imageUploadArea');
+  uploadDiv.innerHTML = `
+    <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" fill="none" stroke-width="2">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+      <circle cx="8.5" cy="8.5" r="1.5"/>
+      <polyline points="21 15 16 10 5 21"/>
+    </svg>
+    <p>Ajouter une photo</p>
+  `;
+  uploadDiv.classList.remove('has-image');
+  
+  selectType('material');
   document.getElementById('addModal').classList.add('active');
-  document.getElementById('itemName').focus();
+  document.body.style.overflow = 'hidden';
 }
 
 function closeAddForm() {
   document.getElementById('addModal').classList.remove('active');
   document.getElementById('addForm').reset();
-  selectedType = 'material';
-  document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelector('.type-btn[data-type="material"]').classList.add('active');
+  document.body.style.overflow = '';
+  uploadedImageUrl = '';
+  editingId = null;
 }
 
 function selectType(type) {
   selectedType = type;
   document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
   document.querySelector(`.type-btn[data-type="${type}"]`).classList.add('active');
+  
+  // Afficher/masquer les champs selon le type
+  document.querySelectorAll('.material-only').forEach(el => {
+    el.style.display = type === 'material' ? 'block' : 'none';
+  });
+  document.querySelectorAll('.supplier-only').forEach(el => {
+    el.style.display = type === 'supplier' ? 'block' : 'none';
+  });
 }
 
 function submitForm(e) {
   e.preventDefault();
   
-  const newItem = {
-    id: Date.now().toString(),
+  const itemData = {
     type: selectedType,
     name: document.getElementById('itemName').value,
     category: document.getElementById('itemCategory').value,
-    contact: document.getElementById('itemSupplier').value,
-    price: document.getElementById('itemPrice').value,
     description: document.getElementById('itemDescription').value,
-    image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%23' + Math.floor(Math.random()*16777215).toString(16) + '" width="400" height="300"/%3E%3C/svg%3E',
+    image: uploadedImageUrl || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%23' + Math.floor(Math.random()*16777215).toString(16) + '" width="400" height="300"/%3E%3C/svg%3E',
     favorite: false,
-    createdAt: Date.now(),
     updatedAt: Date.now()
   };
   
-  items.push(newItem);
+  // Champs spécifiques aux matériaux
+  if (selectedType === 'material') {
+    itemData.contact = document.getElementById('itemSupplier').value;
+    itemData.price = document.getElementById('itemPrice').value;
+    itemData.finish = document.getElementById('itemFinish').value;
+  }
+  
+  // Champs spécifiques aux fournisseurs  
+  if (selectedType === 'supplier') {
+    itemData.phone = document.getElementById('itemPhone').value;
+    itemData.email = document.getElementById('itemEmail').value;
+    itemData.website = document.getElementById('itemWebsite').value;
+    itemData.address = document.getElementById('itemAddress').value;
+  }
+  
+  if (editingId) {
+    // Mode édition
+    const index = items.findIndex(i => i.id === editingId);
+    if (index !== -1) {
+      items[index] = { ...items[index], ...itemData };
+      alert('✅ ' + itemData.name + ' modifié avec succès!');
+    }
+  } else {
+    // Mode création
+    itemData.id = Date.now().toString();
+    itemData.createdAt = Date.now();
+    items.push(itemData);
+    alert('✅ ' + itemData.name + ' ajouté avec succès!');
+  }
+  
   localStorage.setItem('thecraft-items', JSON.stringify(items));
   render();
   closeAddForm();
-  
-  alert('✅ ' + newItem.name + ' ajouté avec succès!');
   
   if (selectedType === 'material') {
     switchTab('materials');
   } else {
     switchTab('suppliers');
   }
+}
+
+function editItem(id) {
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+  
+  editingId = id;
+  selectedType = item.type;
+  uploadedImageUrl = item.image || '';
+  
+  document.getElementById('formTitle').textContent = 'Modifier';
+  document.getElementById('submitBtn').textContent = 'Enregistrer';
+  
+  document.getElementById('itemName').value = item.name || '';
+  document.getElementById('itemCategory').value = item.category || '';
+  document.getElementById('itemDescription').value = item.description || '';
+  
+  // Champs matériaux
+  if (item.type === 'material') {
+    document.getElementById('itemSupplier').value = item.contact || '';
+    document.getElementById('itemPrice').value = item.price || '';
+    document.getElementById('itemFinish').value = item.finish || '';
+  }
+  
+  // Champs fournisseurs
+  if (item.type === 'supplier') {
+    document.getElementById('itemPhone').value = item.phone || '';
+    document.getElementById('itemEmail').value = item.email || '';
+    document.getElementById('itemWebsite').value = item.website || '';
+    document.getElementById('itemAddress').value = item.address || '';
+  }
+  
+  if (uploadedImageUrl) {
+    const uploadDiv = document.getElementById('imageUploadArea');
+    uploadDiv.innerHTML = `<img src="${uploadedImageUrl}" alt="Preview">`;
+    uploadDiv.classList.add('has-image');
+  }
+  
+  selectType(item.type);
+  document.getElementById('addModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
 
 init();
