@@ -1,0 +1,32 @@
+name: Sync TheCraft Data
+
+on:
+  repository_dispatch:
+    types: [sync-data]
+
+jobs:
+  update-files:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Update materials.json
+        run: |
+          echo '${{ github.event.client_payload.materials }}' > materials.json
+      
+      - name: Update suppliers.json
+        run: |
+          echo '${{ github.event.client_payload.suppliers }}' > suppliers.json
+      
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'TheCraft Auto-Sync'
+          git config --global user.email 'auto-sync@thecraft.app'
+          git add materials.json suppliers.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "🔄 Auto-sync from app"
+          git push
