@@ -942,23 +942,33 @@ function editItem(id) {
 async function syncToGitHub() {
   toggleMenu();
   
+  console.log('🔄 Début synchronisation...');
+  
   // Séparer matériaux et fournisseurs
   const materials = items.filter(i => i.type === 'material');
   const suppliers = items.filter(i => i.type === 'supplier');
   
+  console.log('📦 Matériaux:', materials.length);
+  console.log('🏢 Fournisseurs:', suppliers.length);
+  
+  // Sauvegarder en localStorage d'abord (backup immédiat)
+  localStorage.setItem('thecraft-items', JSON.stringify(items));
+  console.log('✅ Sauvegarde locale OK');
+  
   // Afficher un message de chargement
-  const originalText = document.body.innerHTML;
   const loadingDiv = document.createElement('div');
   loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.9);color:#fff;padding:40px;border-radius:20px;z-index:9999;text-align:center;';
-  loadingDiv.innerHTML = '<h2>🔄 Synchronisation...</h2><p style="margin-top:10px;opacity:0.8;">Envoi des données à GitHub</p>';
+  loadingDiv.innerHTML = '<h2>🔄 Synchronisation...</h2><p style="margin-top:10px;opacity:0.8;">Envoi à GitHub</p>';
   document.body.appendChild(loadingDiv);
   
   try {
+    console.log('📡 Envoi requête GitHub...');
+    
     const response = await fetch('https://api.github.com/repos/jd4cp5vtjb-alt/thecraft-library/dispatches', {
       method: 'POST',
       headers: {
         'Accept': 'application/vnd.github.v3+json',
-        'Authorization': 'Bearer ghp_METTRE_TON_TOKEN_ICI',
+        'Authorization': 'Bearer ghp_uWaugRF5yiPL76HyIdRdCJ2n-ZRLHFM32DF8C',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -970,19 +980,27 @@ async function syncToGitHub() {
       })
     });
     
+    console.log('📥 Réponse GitHub:', response.status, response.statusText);
+    
     document.body.removeChild(loadingDiv);
     
     if (response.status === 204) {
-      alert('✅ Synchronisation réussie !\n\n📦 ' + materials.length + ' matériaux\n🏢 ' + suppliers.length + ' fournisseurs\n\nLes fichiers GitHub seront mis à jour dans 30 secondes.');
+      alert('✅ Synchronisation réussie !\n\n📦 ' + materials.length + ' matériaux\n🏢 ' + suppliers.length + ' fournisseurs\n\nVérifie dans Actions sur GitHub (30 secondes)');
+      console.log('✅ Sync OK - Vérifie GitHub Actions');
     } else {
-      throw new Error('Erreur: ' + response.status);
+      const errorText = await response.text();
+      console.error('❌ Erreur HTTP:', response.status, errorText);
+      throw new Error('HTTP ' + response.status + ': ' + errorText);
     }
   } catch (error) {
-    document.body.removeChild(loadingDiv);
-    alert('❌ Erreur de synchronisation\n\n' + error.message + '\n\nVérifie que ton token GitHub est bien configuré dans le code (ligne avec ghp_...)');
-    console.error('Erreur sync:', error);
+    if (document.body.contains(loadingDiv)) {
+      document.body.removeChild(loadingDiv);
+    }
+    console.error('❌ Erreur complète:', error);
+    alert('❌ Erreur de synchronisation\n\n' + error.message + '\n\nOuvre la Console (Développement) pour plus de détails.\n\nTes données sont sauvegardées localement.');
   }
 }
+
 
 function exportData() {
   // Séparer matériaux et fournisseurs
