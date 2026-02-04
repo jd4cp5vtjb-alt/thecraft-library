@@ -177,6 +177,7 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
 </button>
 <div class="menu-dropdown" id="menu">
   <div class="menu-item" id="exportBtn">🔄 Synchroniser</div>
+  <div class="menu-item" id="backupBtn">💾 Backup</div>
   <div class="menu-item" id="importBtn">📥 Importer</div>
   <div class="menu-item" id="favBtn">❤️ Favoris</div>
 </div>
@@ -367,48 +368,47 @@ function init() {
 }
 
 async function loadFromStorage() {
-  let githubLoaded = false;
+  // 1. PRIORITÉ : Charger depuis localStorage
+  const stored = localStorage.getItem('thecraft-items');
+  if (stored) {
+    try {
+      items = JSON.parse(stored);
+      console.log('✅ Chargé depuis localStorage:', items.length, 'items');
+      return; // On s'arrête là, on a les données !
+    } catch (e) {
+      console.error('❌ Erreur parse localStorage:', e);
+    }
+  }
   
-  // 1. Charger matériaux depuis GitHub
+  // 2. FALLBACK : Si localStorage vide, charger depuis GitHub (première fois)
   try {
     const resMat = await fetch('https://raw.githubusercontent.com/jd4cp5vtjb-alt/thecraft-library/main/materials.json');
     if (resMat.ok) {
       const materials = await resMat.json();
       
-      // 2. Charger fournisseurs depuis GitHub
       const resSup = await fetch('https://raw.githubusercontent.com/jd4cp5vtjb-alt/thecraft-library/main/suppliers.json');
       if (resSup.ok) {
         const suppliers = await resSup.json();
         
-        // Combiner les 2 bases
+        // Combiner et sauvegarder
         items = [...materials, ...suppliers];
         localStorage.setItem('thecraft-items', JSON.stringify(items));
-        console.log('✅ Données GitHub:', materials.length, 'matériaux +', suppliers.length, 'fournisseurs');
-        githubLoaded = true;
-        render();
+        console.log('✅ Chargé depuis GitHub (première fois):', items.length, 'items');
+        return;
       }
     }
   } catch (e) {
-    console.log('⚠️ GitHub non accessible, chargement local...');
+    console.log('⚠️ GitHub non accessible');
   }
   
-  // 3. Fallback : charger depuis localStorage
-  if (!githubLoaded) {
-    const stored = localStorage.getItem('thecraft-items');
-    if (stored) {
-      try {
-        items = JSON.parse(stored);
-        console.log('✅ Données localStorage:', items.length, 'items');
-      } catch (e) {
-        console.error('❌ Erreur chargement:', e);
-      }
-    }
-  }
+  // 3. Si rien trouvé, items reste vide (première installation)
+  console.log('ℹ️ Première installation - Aucune donnée');
 }
 
 function setupEvents() {
   document.getElementById('menuBtn').addEventListener('click', toggleMenu);
   document.getElementById('exportBtn').addEventListener('click', exportData);
+  document.getElementById('backupBtn').addEventListener('click', backupData);
   document.getElementById('importBtn').addEventListener('click', importData);
   document.getElementById('favBtn').addEventListener('click', openFavoritesModal);
   document.getElementById('fabBtn').addEventListener('click', openAddForm);
@@ -937,35 +937,39 @@ function editItem(id) {
   document.getElementById('addModal').classList.add('active');
 }
 
+function backupData() {
+  toggleMenu();
+  
+  const blob = new Blob([JSON.stringify(items, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const date = new Date().toISOString().split('T')[0];
+  a.download = 'thecraft-backup-' + date + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  alert('💾 Backup créé !\n\n📥 Fichier téléchargé : thecraft-backup-' + date + '.json\n\n📦 ' + items.length + ' items sauvegardés\n\n💡 Garde ce fichier précieusement pour restaurer tes données si besoin');
+}
+
 function exportData() {
-  // Séparer matériaux et fournisseurs
+  toggleMenu();
+  
+  // Sauvegarder en localStorage
+  localStorage.setItem('thecraft-items', JSON.stringify(items));
+  
+  // Vérifier que ça a bien marché
+  const stored = localStorage.getItem('thecraft-items');
   const materials = items.filter(i => i.type === 'material');
   const suppliers = items.filter(i => i.type === 'supplier');
   
-  // Créer materials.json
-  const blobMat = new Blob([JSON.stringify(materials,null,2)], {type:'application/json'});
-  const urlMat = URL.createObjectURL(blobMat);
-  const aMat = document.createElement('a');
-  aMat.href = urlMat;
-  aMat.download = 'materials.json';
-  aMat.click();
-  URL.revokeObjectURL(urlMat);
-  
-  // Créer suppliers.json (avec un petit délai)
-  setTimeout(() => {
-    const blobSup = new Blob([JSON.stringify(suppliers,null,2)], {type:'application/json'});
-    const urlSup = URL.createObjectURL(blobSup);
-    const aSup = document.createElement('a');
-    aSup.href = urlSup;
-    aSup.download = 'suppliers.json';
-    aSup.click();
-    URL.revokeObjectURL(urlSup);
-    
-    alert('✅ Synchronisation locale réussie !\n\n📦 ' + materials.length + ' matériaux\n🏢 ' + suppliers.length + ' fournisseurs\n\n📥 2 fichiers téléchargés\n\n🔄 Pour synchroniser GitHub :\n1. Va sur ton repo\n2. Upload les 2 fichiers (remplace les anciens)\n3. ✅ Synchronisé !\n\n⏱️ Temps : 30 secondes');
-  }, 500);
-  
-  toggleMenu();
+  if (stored) {
+    alert('✅ Synchronisation automatique réussie !\n\n💾 ' + items.length + ' items sauvegardés localement\n📦 ' + materials.length + ' matériaux\n🏢 ' + suppliers.length + ' fournisseurs\n\n✅ Tes données sont sécurisées sur ton iPhone');
+  } else {
+    alert('⚠️ Problème de sauvegarde\n\nVérifie dans Réglages → Safari :\n- "Bloquer tous les cookies" doit être DÉSACTIVÉ\n- Ne pas être en navigation privée');
+  }
 }
+
 
 
 function importData() {
