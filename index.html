@@ -9,10 +9,11 @@
 <meta name="apple-mobile-web-app-title" content="TheCraft Library">
 <meta name="msapplication-TileColor" content="#1E3A8A">
 <meta name="theme-color" content="#1E3A8A">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icon.png">
 <title>TheCraft Library</title>
+<link rel="manifest" href="manifest.json">
 <style>
 :root {
   --bg-start: #1E3A8A;
@@ -176,8 +177,7 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
   <span></span>
 </button>
 <div class="menu-dropdown" id="menu">
-  <div class="menu-item" id="exportBtn">🔄 Synchroniser</div>
-  <div class="menu-item" id="backupBtn">💾 Backup</div>
+  <div class="menu-item" id="syncBtn">☁️ Sync iCloud</div>
   <div class="menu-item" id="importBtn">📥 Importer</div>
   <div class="menu-item" id="favBtn">❤️ Favoris</div>
 </div>
@@ -407,8 +407,7 @@ async function loadFromStorage() {
 
 function setupEvents() {
   document.getElementById('menuBtn').addEventListener('click', toggleMenu);
-  document.getElementById('exportBtn').addEventListener('click', exportData);
-  document.getElementById('backupBtn').addEventListener('click', backupData);
+  document.getElementById('syncBtn').addEventListener('click', syncToiCloud);
   document.getElementById('importBtn').addEventListener('click', importData);
   document.getElementById('favBtn').addEventListener('click', openFavoritesModal);
   document.getElementById('fabBtn').addEventListener('click', openAddForm);
@@ -937,6 +936,39 @@ function editItem(id) {
   document.getElementById('addModal').classList.add('active');
 }
 
+function syncToiCloud() {
+  toggleMenu();
+  
+  // Séparer matériaux et fournisseurs
+  const materials = items.filter(i => i.type === 'material');
+  const suppliers = items.filter(i => i.type === 'supplier');
+  
+  // Sauvegarder en localStorage
+  localStorage.setItem('thecraft-items', JSON.stringify(items));
+  
+  // Télécharger materials.json
+  const blobMat = new Blob([JSON.stringify(materials, null, 2)], {type: 'application/json'});
+  const urlMat = URL.createObjectURL(blobMat);
+  const aMat = document.createElement('a');
+  aMat.href = urlMat;
+  aMat.download = 'materials.json';
+  aMat.click();
+  URL.revokeObjectURL(urlMat);
+  
+  // Télécharger suppliers.json
+  setTimeout(() => {
+    const blobSup = new Blob([JSON.stringify(suppliers, null, 2)], {type: 'application/json'});
+    const urlSup = URL.createObjectURL(blobSup);
+    const aSup = document.createElement('a');
+    aSup.href = urlSup;
+    aSup.download = 'suppliers.json';
+    aSup.click();
+    URL.revokeObjectURL(urlSup);
+    
+    alert('☁️ Sync iCloud\n\n✅ 2 fichiers téléchargés\n📦 ' + materials.length + ' matériaux\n🏢 ' + suppliers.length + ' fournisseurs\n\n📍 IMPORTANT :\n1. Va dans Fichiers → Téléchargements\n2. Sélectionne les 2 fichiers\n3. Déplace vers :\n   iCloud Drive/TheCraftLibrary/Base de données/\n4. Remplace les anciens\n\n✅ Tes fichiers iCloud seront synchronisés sur tous tes appareils Apple !');
+  }, 500);
+}
+
 function backupData() {
   toggleMenu();
   
@@ -998,6 +1030,21 @@ function importData() {
 }
 
 init();
+</script>
+
+<script>
+// Enregistrer le Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then((registration) => {
+        console.log('✅ Service Worker enregistré:', registration.scope);
+      })
+      .catch((error) => {
+        console.log('❌ Erreur Service Worker:', error);
+      });
+  });
+}
 </script>
 
 </body>
