@@ -1,0 +1,37 @@
+{
+  "name": "TheCraft Library",
+  "short_name": "TheCraft",
+  "description": "Bibliothèque de matériaux et fournisseurs pour architectes",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1E3A8A",
+  "theme_color": "#1E3A8A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "business"],
+  "shortcuts": [
+    {
+      "name": "Ajouter matériau",
+      "url": "/?action=add-material",
+      "description": "Ajouter un nouveau matériau"
+    },
+    {
+      "name": "Ajouter fournisseur",
+      "url": "/?action=add-supplier",
+      "description": "Ajouter un nouveau fournisseur"
+    }
+  ]
+}
