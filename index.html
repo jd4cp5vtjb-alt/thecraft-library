@@ -176,8 +176,7 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
   <span></span>
 </button>
 <div class="menu-dropdown" id="menu">
-  <div class="menu-item" id="syncBtn">🔄 Synchroniser</div>
-  <div class="menu-item" id="exportBtn">📤 Exporter</div>
+  <div class="menu-item" id="exportBtn">🔄 Synchroniser</div>
   <div class="menu-item" id="importBtn">📥 Importer</div>
   <div class="menu-item" id="favBtn">❤️ Favoris</div>
 </div>
@@ -409,7 +408,6 @@ async function loadFromStorage() {
 
 function setupEvents() {
   document.getElementById('menuBtn').addEventListener('click', toggleMenu);
-  document.getElementById('syncBtn').addEventListener('click', syncToGitHub);
   document.getElementById('exportBtn').addEventListener('click', exportData);
   document.getElementById('importBtn').addEventListener('click', importData);
   document.getElementById('favBtn').addEventListener('click', openFavoritesModal);
@@ -939,69 +937,6 @@ function editItem(id) {
   document.getElementById('addModal').classList.add('active');
 }
 
-async function syncToGitHub() {
-  toggleMenu();
-  
-  console.log('🔄 Début synchronisation...');
-  
-  // Séparer matériaux et fournisseurs
-  const materials = items.filter(i => i.type === 'material');
-  const suppliers = items.filter(i => i.type === 'supplier');
-  
-  console.log('📦 Matériaux:', materials.length);
-  console.log('🏢 Fournisseurs:', suppliers.length);
-  
-  // Sauvegarder en localStorage d'abord (backup immédiat)
-  localStorage.setItem('thecraft-items', JSON.stringify(items));
-  console.log('✅ Sauvegarde locale OK');
-  
-  // Afficher un message de chargement
-  const loadingDiv = document.createElement('div');
-  loadingDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.9);color:#fff;padding:40px;border-radius:20px;z-index:9999;text-align:center;';
-  loadingDiv.innerHTML = '<h2>🔄 Synchronisation...</h2><p style="margin-top:10px;opacity:0.8;">Envoi à GitHub</p>';
-  document.body.appendChild(loadingDiv);
-  
-  try {
-    console.log('📡 Envoi requête GitHub...');
-    
-    const response = await fetch('https://api.github.com/repos/jd4cp5vtjb-alt/thecraft-library/dispatches', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/vnd.github.v3+json',
-        'Authorization': 'Bearer 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',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        event_type: 'sync-data',
-        client_payload: {
-          materials: JSON.stringify(materials, null, 2),
-          suppliers: JSON.stringify(suppliers, null, 2)
-        }
-      })
-    });
-    
-    console.log('📥 Réponse GitHub:', response.status, response.statusText);
-    
-    document.body.removeChild(loadingDiv);
-    
-    if (response.status === 204) {
-      alert('✅ Synchronisation réussie !\n\n📦 ' + materials.length + ' matériaux\n🏢 ' + suppliers.length + ' fournisseurs\n\nVérifie dans Actions sur GitHub (30 secondes)');
-      console.log('✅ Sync OK - Vérifie GitHub Actions');
-    } else {
-      const errorText = await response.text();
-      console.error('❌ Erreur HTTP:', response.status, errorText);
-      throw new Error('HTTP ' + response.status + ': ' + errorText);
-    }
-  } catch (error) {
-    if (document.body.contains(loadingDiv)) {
-      document.body.removeChild(loadingDiv);
-    }
-    console.error('❌ Erreur complète:', error);
-    alert('❌ Erreur de synchronisation\n\n' + error.message + '\n\nOuvre la Console (Développement) pour plus de détails.\n\nTes données sont sauvegardées localement.');
-  }
-}
-
-
 function exportData() {
   // Séparer matériaux et fournisseurs
   const materials = items.filter(i => i.type === 'material');
@@ -1026,7 +961,7 @@ function exportData() {
     aSup.click();
     URL.revokeObjectURL(urlSup);
     
-    alert('✅ 2 fichiers exportés :\n📦 materials.json (' + materials.length + ' items)\n🏢 suppliers.json (' + suppliers.length + ' items)');
+    alert('✅ Synchronisation locale réussie !\n\n📦 ' + materials.length + ' matériaux\n🏢 ' + suppliers.length + ' fournisseurs\n\n📥 2 fichiers téléchargés\n\n🔄 Pour synchroniser GitHub :\n1. Va sur ton repo\n2. Upload les 2 fichiers (remplace les anciens)\n3. ✅ Synchronisé !\n\n⏱️ Temps : 30 secondes');
   }, 500);
   
   toggleMenu();
