@@ -15,31 +15,119 @@
 <title>TheCraft Library</title>
 <link rel="manifest" href="manifest.json">
 <style>
+/* ========================================
+   🎨 SYSTÈME DE THÈMES UNIFIÉ
+   Change juste les variables → Tout change !
+   ======================================== */
+
+/* ✅ THÈME CLAIR (ACTIF PAR DÉFAUT) */
 :root {
-  --bg-start: #1E3A8A;
-  --bg-end: #3B82F6;
-  --card-bg: rgba(255,255,255,0.15);
-  --text: #FFFFFF;
-  --shadow: rgba(0,0,0,0.2);
-}
-* { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,sans-serif; }
-html { 
-  background: linear-gradient(135deg, #1E3A8A, #3B82F6);
-  background-attachment: fixed;
-}
-body { 
-  background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); 
-  min-height:100vh; 
-  color:var(--text); 
-  padding-bottom:100px; 
+/* COULEURS DE BASE */
+–bg: #FFFFFF;                    /* Fond principal */
+–text: #0F172A;                  /* TOUTES les écritures (bleu presque noir) */
+–text-secondary: #64748B;        /* Texte secondaire */
+
+/* ÉLÉMENTS UI */
+–card: #FFFFFF;                  /* Fond cartes */
+–border: #E2E8F0;                /* Toutes les bordures - ÉPAISSEUR 1px */
+–shadow: rgba(0,0,0,0.08);       /* Toutes les ombres */
+
+/* ACCENT & INTERACTIONS */
+–accent: #3B82F6;                /* Boutons actifs, liens */
+–accent-hover: #2563EB;          /* Hover sur accent */
+
+/* OVERLAYS (sur images) */
+–overlay: rgba(0,0,0,0.7);       /* Fond overlay images */
+–overlay-text: #FFFFFF;          /* Texte sur overlay */
+
+/* FAB */
+–fab-bg: rgba(255,255,255,0.5);  /* Fond FAB moins opaque */
+–fab-border: rgba(0,0,0,0.1);    /* Bordure FAB fine */
 }
 
-.menu-btn { position:fixed; top:20px; right:20px; width:44px; height:44px; background:rgba(255,255,255,0.2); backdrop-filter:blur(20px); border-radius:50%; border:none; cursor:pointer; z-index:1000; display:flex; flex-direction:column; gap:5px; align-items:center; justify-content:center; }
-.menu-btn span { width:20px; height:2.5px; background:#fff; border-radius:2px; }
-.menu-dropdown { position:fixed; top:75px; right:20px; background:rgba(255,255,255,0.25); backdrop-filter:blur(30px); border-radius:16px; padding:8px; z-index:999; display:none; min-width:180px; }
+/* 🌙 THÈME SOMBRE (DÉSACTIVÉ - décommente pour activer)
+:root {
+–bg: #0F172A;
+–text: #F1F5F9;
+–text-secondary: #94A3B8;
+
+–card: rgba(255,255,255,0.05);
+–border: rgba(255,255,255,0.1);
+–shadow: rgba(0,0,0,0.5);
+
+–accent: #3B82F6;
+–accent-hover: #60A5FA;
+
+–overlay: rgba(0,0,0,0.8);
+–overlay-text: #F1F5F9;
+
+–fab-bg: rgba(255,255,255,0.08);
+–fab-border: rgba(255,255,255,0.15);
+}
+*/
+
+- { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,sans-serif; }
+  html {
+  background: var(–bg);
+  }
+  body {
+  background: var(–bg);
+  min-height: 100vh;
+  color: var(–text);
+  padding-bottom: 100px;
+  }
+
+.menu-btn {
+position: fixed;
+top: 20px;
+right: 20px;
+width: 44px;
+height: 44px;
+background: var(–fab-bg);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border-radius: 50%;
+border: 1px solid var(–border);
+cursor: pointer;
+z-index: 1000;
+display: flex;
+flex-direction: column;
+gap: 5px;
+align-items: center;
+justify-content: center;
+box-shadow: 0 4px 12px var(–shadow);
+}
+.menu-btn span {
+width: 18px;
+height: 2px;
+background: var(–text-secondary);
+border-radius: 2px;
+}
+.menu-dropdown {
+position: fixed;
+top: 75px;
+right: 20px;
+background: var(–card);
+border-radius: 16px;
+padding: 8px;
+z-index: 999;
+display: none;
+min-width: 180px;
+border: 1px solid var(–border);
+box-shadow: 0 8px 24px var(–shadow);
+}
 .menu-dropdown.active { display:block; }
-.menu-item { padding:12px 16px; border-radius:10px; cursor:pointer; color:#fff; font-weight:600; }
-.menu-item:hover { background:rgba(255,255,255,0.2); }
+.menu-item {
+padding: 14px 18px;
+border-radius: 12px;
+cursor: pointer;
+color: var(–text);
+font-weight: 500;
+transition: background 0.2s;
+}
+.menu-item:hover {
+background: var(–bg);
+}
 
 .page-header { padding:24px 20px 8px; }
 .page-subtitle { font-size:0.8em; opacity:0.85; text-transform:uppercase; letter-spacing:1.2px; margin-bottom:6px; }
@@ -51,20 +139,85 @@ body {
 .scroll-h::-webkit-scrollbar { display:none; }
 .scroll-h .cards { display:flex; gap:16px; padding:0 20px; }
 
-.h-card { min-width:280px; height:340px; border-radius:24px; background:var(–card-bg); backdrop-filter:blur(20px); position:relative; cursor:pointer; transition:transform 0.3s; overflow:hidden; flex-shrink:0; }
+.h-card {
+min-width: 280px;
+height: 340px;
+border-radius: 24px;
+background: var(–card);
+border: 1px solid var(–border);
+box-shadow: 0 4px 20px var(–shadow);
+position: relative;
+cursor: pointer;
+transition: transform 0.3s, box-shadow 0.3s;
+overflow: hidden;
+flex-shrink: 0;
+}
+.h-card:active {
+transform: scale(0.97);
+}
 .h-card:hover { transform:translateY(-6px); }
 .h-card img { width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; display:block; }
-.h-card .overlay { position:absolute; bottom:0; left:0; right:0; padding:24px 20px; background:linear-gradient(to top, rgba(0,0,0,0.85), transparent); z-index:1; }
+.h-card .overlay {
+position: absolute;
+bottom: 0;
+left: 0;
+right: 0;
+padding: 24px 20px;
+background: linear-gradient(to top, var(–overlay), transparent);
+z-index: 1;
+color: var(–overlay-text);
+}
 .h-card h3 { font-size:1.3em; font-weight:800; }
-.h-card .tag { font-size:0.7em; background:rgba(255,255,255,0.25); padding:5px 10px; border-radius:8px; display:inline-block; margin-bottom:8px; }
+.h-card .tag {
+font-size:0.7em;
+background:var(–tag-bg);
+color:var(–tag-text);
+padding:6px 12px;
+border-radius:8px;
+display:inline-block;
+margin-bottom:8px;
+font-weight:600;
+}
 
 .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; padding:0 20px; margin-bottom:32px; }
-.card { min-height:340px; height:340px; border-radius:24px; background:var(–card-bg); backdrop-filter:blur(20px); position:relative; cursor:pointer; transition:transform 0.3s; overflow:hidden; }
+.card {
+min-height: 340px;
+height: 340px;
+border-radius: 24px;
+background: var(–card);
+border: 1px solid var(–border);
+box-shadow: 0 4px 20px var(–shadow);
+position: relative;
+cursor: pointer;
+transition: transform 0.3s, box-shadow 0.3s;
+overflow: hidden;
+}
+.card:active {
+transform: scale(0.97);
+}
 .card:hover { transform:translateY(-6px); }
 .card img { width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; display:block; }
-.card .overlay { position:absolute; bottom:0; left:0; right:0; padding:28px 20px; background:linear-gradient(to top, rgba(0,0,0,0.85), transparent); z-index:1; }
+.card .overlay {
+position: absolute;
+bottom: 0;
+left: 0;
+right: 0;
+padding: 28px 20px;
+background: linear-gradient(to top, var(–overlay), transparent);
+z-index: 1;
+color: var(–overlay-text);
+}
 .card h3 { font-size:1.5em; font-weight:800; }
-.card .tag { font-size:0.7em; background:rgba(255,255,255,0.2); padding:5px 10px; border-radius:8px; display:inline-block; margin-bottom:8px; }
+.card .tag {
+font-size:0.75em;
+background:var(–tag-bg);
+color:var(–tag-text);
+padding:6px 12px;
+border-radius:10px;
+display:inline-block;
+margin-bottom:10px;
+font-weight:600;
+}
 
 .fav-btn { position:absolute; top:16px; right:16px; font-size:1.6em; cursor:pointer; z-index:10; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.3)); user-select:none; }
 .fav-btn:hover { transform:scale(1.15); }
@@ -72,20 +225,64 @@ body {
 .cats { overflow-x:auto; padding:16px 0; margin-bottom:24px; }
 .cats::-webkit-scrollbar { display:none; }
 .cats .list { display:flex; gap:10px; padding:0 20px; }
-.cat-chip { padding:10px 18px; border-radius:20px; background:rgba(255,255,255,0.22); border:1px solid rgba(255,255,255,0.25); font-size:0.9em; font-weight:600; cursor:pointer; white-space:nowrap; }
+.cat-chip {
+padding: 10px 18px;
+border-radius: 20px;
+background: var(–card);
+border: 1px solid var(–border);
+font-size: 0.9em;
+font-weight: 600;
+cursor: pointer;
+white-space: nowrap;
+color: var(–text);
+transition: all 0.2s;
+box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.cat-chip:hover {
+background: var(–bg);
+border-color: var(–accent);
+}
+.cat-chip.active {
+background: var(–accent);
+border-color: var(–accent);
+color: #FFFFFF;
+box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
 .cat-chip:hover { background:rgba(255,255,255,0.35); }
 .cat-chip.active { background:rgba(255,255,255,0.45); border-color:#fff; }
 
 .pinterest { padding:0 16px; column-count:2; column-gap:16px; }
 @media (min-width:600px) { .pinterest { column-count:3; } }
-.pint-item { break-inside:avoid; margin-bottom:16px; background:var(–card-bg); backdrop-filter:blur(20px); border-radius:20px; overflow:hidden; cursor:pointer; display:inline-block; width:100%; position:relative; transition:transform 0.3s; }
+.pint-item {
+break-inside: avoid;
+margin-bottom: 16px;
+background: var(–card);
+border: 1px solid var(–border);
+box-shadow: 0 2px 12px var(–shadow);
+border-radius: 20px;
+overflow: hidden;
+cursor: pointer;
+display: inline-block;
+width: 100%;
+position: relative;
+transition: transform 0.3s;
+}
 .pint-item:hover { transform:translateY(-6px); }
 .pint-item img { width:100%; display:block; object-fit:cover; min-height:180px; max-height:280px; }
 .pint-item.tall img { height:280px; }
 .pint-item.short img { height:180px; }
 .pint-item .info { padding:14px; background:var(–card-bg); backdrop-filter:blur(20px); }
 .pint-item h3 { font-size:1em; font-weight:700; margin-bottom:8px; }
-.pint-item .tag { background:rgba(59,130,246,0.25); padding:5px 11px; border-radius:8px; font-size:0.7em; color:#fff; font-weight:600; display:inline-block; margin-bottom:6px; }
+.pint-item .tag {
+background:var(–tag-bg);
+color:var(–tag-text);
+padding:6px 12px;
+border-radius:8px;
+font-size:0.7em;
+font-weight:600;
+display:inline-block;
+margin-bottom:6px;
+}
 .pint-item .price { font-size:0.9em; font-weight:700; margin-top:6px; background:rgba(255,255,255,0.2); padding:6px 12px; border-radius:8px; display:inline-block; }
 
 .discover { margin-bottom:32px; }
@@ -93,20 +290,87 @@ body {
 .discover .scroll { overflow-x:auto; }
 .discover .scroll::-webkit-scrollbar { display:none; }
 .discover .list { display:flex; gap:16px; padding:0 20px; }
-.disc-card { min-width:240px; width:240px; height:280px; border-radius:20px; background:var(–card-bg); backdrop-filter:blur(20px); position:relative; cursor:pointer; overflow:hidden; transition:transform 0.3s; flex-shrink:0; }
-.disc-card:hover { transform:translateY(-4px); }
+.disc-card {
+min-width: 240px;
+width: 240px;
+height: 280px;
+border-radius: 20px;
+background: var(–card);
+border: 1px solid var(–border);
+box-shadow: 0 4px 16px var(–shadow);
+position: relative;
+cursor: pointer;
+overflow: hidden;
+transition: transform 0.3s, box-shadow 0.3s;
+flex-shrink: 0;
+}
+.disc-card:active {
+transform: scale(0.97);
+}
 .disc-card img { width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; display:block; }
 .disc-card .name { position:absolute; bottom:0; left:0; right:0; padding:20px 16px; background:linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
 .disc-card h4 { font-size:1.1em; font-weight:700; }
 
-.tab-bar { position:fixed; bottom:20px; left:20px; right:20px; background:rgba(255,255,255,0.18); backdrop-filter:blur(30px); border-radius:28px; display:flex; justify-content:space-around; padding:12px 10px; z-index:100; }
-.tab-item { display:flex; flex-direction:column; align-items:center; padding:10px 14px; border-radius:18px; cursor:pointer; background:transparent; border:none; color:rgba(255,255,255,0.65); min-width:65px; }
-.tab-item.active { background:rgba(255,255,255,0.2); color:#fff; }
-.tab-item svg { width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:2.5; }
-.tab-item span { font-size:0.65em; margin-top:6px; font-weight:600; }
+.tab-bar {
+position: fixed;
+bottom: 20px;
+left: 20px;
+right: 20px;
+background: var(–card);
+border: 1px solid var(–border);
+box-shadow: 0 8px 24px var(–shadow);
+border-radius: 50px;
+display: flex;
+justify-content: space-around;
+padding: 8px 6px;
+z-index: 100;
+}
+.tab-item {
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 10px 12px;
+border-radius: 20px;
+cursor: pointer;
+background: transparent;
+border: none;
+color: var(–text-secondary);
+min-width: 60px;
+font-size: 0.75em;
+font-weight: 500;
+transition: all 0.3s;
+}
+.tab-item.active {
+color: var(–accent);
+font-weight: 600;
+}
+.tab-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+.tab-item span { font-size: 0.9em; margin-top: 4px; font-weight: 600; }
 
-.fab { position:fixed; bottom:120px; right:24px; width:60px; height:60px; border-radius:50%; background:rgba(255,255,255,0.25); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:28px; cursor:pointer; z-index:99; box-shadow:0 8px 32px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:center; }
-.fab:active { transform:scale(0.95); }
+.fab {
+position: fixed;
+bottom: 100px;
+right: 24px;
+width: 44px;
+height: 44px;
+border-radius: 50%;
+background: var(–fab-bg);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border: 1px solid var(–border);
+color: var(–text-secondary);
+font-size: 24px;
+cursor: pointer;
+z-index: 99;
+box-shadow: 0 4px 12px var(–shadow);
+display: flex;
+align-items: center;
+justify-content: center;
+transition: transform 0.2s;
+}
+.fab:active {
+transform: scale(0.92);
+}
 
 .tab-content { display:none; }
 .tab-content.active { display:block; }
@@ -298,19 +562,19 @@ width: 100%;
 
 <nav class="tab-bar">
   <button class="tab-item active" data-tab="home">
-    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     <span>Accueil</span>
   </button>
   <button class="tab-item" data-tab="suppliers">
-    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
     <span>Fournisseurs</span>
   </button>
   <button class="tab-item" data-tab="materials">
-    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
     <span>Matériaux</span>
   </button>
   <button class="tab-item" id="searchBtn">
-    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <span>Recherche</span>
   </button>
 </nav>
@@ -1154,10 +1418,37 @@ function importData() {
     const reader = new FileReader();
     reader.onload = ev => {
       try {
-        items = JSON.parse(ev.target.result);
+        const newItems = JSON.parse(ev.target.result);
+        
+        // FUSION INTELLIGENTE : Ajoute nouveaux + met à jour existants
+        const existingIds = new Set(items.map(i => i.id));
+        let added = 0;
+        let updated = 0;
+        
+        newItems.forEach(newItem => {
+          const existingIndex = items.findIndex(i => i.id === newItem.id);
+          if (existingIndex >= 0) {
+            // Met à jour l'item existant
+            items[existingIndex] = newItem;
+            updated++;
+          } else {
+            // Ajoute le nouvel item
+            items.push(newItem);
+            added++;
+          }
+        });
+        
         localStorage.setItem('thecraft-items', JSON.stringify(items));
+        loadDaily(); // Regénérer les découvertes après import
         render();
-        alert('✅ ' + items.length + ' items importés !');
+        
+        // Message détaillé
+        let message = '✅ Import réussi !\n';
+        if (added > 0) message += `• ${added} nouveaux items ajoutés\n`;
+        if (updated > 0) message += `• ${updated} items mis à jour\n`;
+        message += `\nTotal : ${items.length} items`;
+        alert(message);
+        
       } catch(err) {
         alert('❌ Erreur: fichier JSON invalide');
         console.error(err);
