@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="TheCraft Library">
 <meta name="msapplication-TileColor" content="#1E3A8A">
 <meta name="theme-color" content="#1E3A8A">
@@ -23,7 +23,16 @@
   --shadow: rgba(0,0,0,0.2);
 }
 * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,sans-serif; }
-body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-height:100vh; color:var(--text); padding-bottom:100px; }
+html { 
+  background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+  background-attachment: fixed;
+}
+body { 
+  background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); 
+  min-height:100vh; 
+  color:var(--text); 
+  padding-bottom:100px; 
+}
 
 .menu-btn { position:fixed; top:20px; right:20px; width:44px; height:44px; background:rgba(255,255,255,0.2); backdrop-filter:blur(20px); border-radius:50%; border:none; cursor:pointer; z-index:1000; display:flex; flex-direction:column; gap:5px; align-items:center; justify-content:center; }
 .menu-btn span { width:20px; height:2.5px; background:#fff; border-radius:2px; }
@@ -522,18 +531,33 @@ function setupEvents() {
 }
 
 function loadDaily() {
+  console.log('📅 loadDaily appelée, items:', items.length);
+  
   const today = new Date().toDateString();
   const stored = localStorage.getItem('daily-suggestions');
+  
   if (stored) {
     const data = JSON.parse(stored);
-    if (data.date === today) {
+    if (data.date === today && data.ids && data.ids.length > 0) {
       daily = data.ids;
+      console.log('✅ Daily chargé depuis cache:', daily.length);
       return;
     }
   }
-  const nonFav = items.filter(i => !i.favorite);
-  daily = nonFav.sort(() => Math.random()-0.5).slice(0,3).map(i => i.id);
-  localStorage.setItem('daily-suggestions', JSON.stringify({date:today,ids:daily}));
+  
+  // Prendre TOUS les items, pas seulement non-fav
+  if (items.length === 0) {
+    console.warn('⚠️ Aucun item disponible');
+    daily = [];
+    return;
+  }
+  
+  // Shuffle et prendre jusqu'à 6 items
+  const shuffled = [...items].sort(() => Math.random() - 0.5);
+  daily = shuffled.slice(0, Math.min(6, items.length)).map(i => i.id);
+  
+  console.log('✅ Daily généré:', daily.length, 'items');
+  localStorage.setItem('daily-suggestions', JSON.stringify({date: today, ids: daily}));
 }
 
 function render() {
@@ -568,7 +592,9 @@ function renderHome() {
   `).join('') : '<div class="empty"><h3>Aucun coup de cœur</h3></div>';
 
   const dailyItems = items.filter(i => daily.includes(i.id));
-  document.getElementById('daily').innerHTML = dailyItems.map(i => `
+  console.log('📊 dailyItems trouvés:', dailyItems.length, '/', daily.length);
+  
+  document.getElementById('daily').innerHTML = dailyItems.length > 0 ? dailyItems.map(i => `
     <div class="card" data-item-id="${i.id}">
       <div class="fav-btn" data-id="${i.id}">${i.favorite?'❤️':'<span style="color:#fff">♡</span>'}</div>
       <img src="${i.image}">
@@ -577,7 +603,7 @@ function renderHome() {
         <h3>${i.name}</h3>
       </div>
     </div>
-  `).join('');
+  `).join('') : '<div class="empty"><h3>Aucune découverte</h3><p>Importez vos données pour voir des suggestions</p></div>';
 
   document.querySelectorAll('.fav-btn').forEach(btn => {
     btn.addEventListener('click', e => {
