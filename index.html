@@ -105,11 +105,48 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
 .empty { text-align:center; padding:80px 20px; opacity:0.7; }
 .empty h3 { font-size:1.3em; margin-bottom:10px; }
 
-.favorites-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.3); backdrop-filter:blur(8px); z-index:3000; padding:40px 0 100px; }
-.favorites-modal.active { display:flex; align-items:center; justify-content:center; }
+.favorites-modal {
+display:none;
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:rgba(0,0,0,0.5);
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+z-index:3000;
+padding:0;
+}
+.favorites-modal.active {
+display:flex;
+align-items:center;
+justify-content:center;
+}
 .favorites-close { position:fixed; top:20px; right:20px; width:44px; height:44px; background:rgba(255,255,255,0.25); backdrop-filter:blur(20px); border-radius:50%; border:none; font-size:1.3em; color:#fff; cursor:pointer; z-index:3001; display:flex; align-items:center; justify-content:center; }
-.favorites-scroll { width:100%; max-width:100vw; height:100%; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; }
+.favorites-scroll {
+width:100%;
+max-width:100vw;
+height:100%;
+overflow-x:auto;
+overflow-y:hidden;
+-webkit-overflow-scrolling:touch;
+scroll-snap-type:x mandatory;
+display:flex;
+align-items:center;
+padding:40px 0;
+}
 .favorites-scroll::-webkit-scrollbar { display:none; }
+.favorites-list {
+display:flex;
+gap:20px;
+padding:0 calc(50vw - 150px);
+align-items:center;
+}
+.favorite-slide {
+scroll-snap-align:center;
+scroll-snap-stop:always;
+}
 .favorites-list { display:flex; height:100%; align-items:center; padding:0 20px; }
 .favorite-slide { min-width:calc(100vw - 80px); width:calc(100vw - 80px); height:85vh; margin:0 20px; display:flex; flex-direction:column; scroll-snap-align:center; position:relative; border-radius:24px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.4); flex-shrink:0; }
 .favorite-slide img { width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; }
@@ -122,8 +159,30 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
 .favorites-empty h2 { font-size:2em; font-weight:900; margin-bottom:16px; color:#fff; }
 .favorites-empty p { font-size:1.1em; opacity:0.8; color:#fff; }
 
-.search-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:linear-gradient(135deg, var(–bg-start), var(–bg-end)); z-index:2000; padding:20px; padding-top:70px; }
-.search-modal.active { display:block; }
+.search-modal {
+display:none;
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:rgba(30, 58, 138, 0.95);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+z-index:2000;
+padding:20px;
+padding-top:70px;
+overflow-y: auto;
+}
+.search-modal.active {
+display:block;
+}
+/* Bloquer le scroll de la page principale quand modal ouvert */
+body.modal-open {
+overflow: hidden;
+position: fixed;
+width: 100%;
+}
 .search-header { display:flex; gap:12px; margin-bottom:20px; }
 .search-header input { flex:1; padding:14px 18px; border-radius:16px; border:1px solid rgba(255,255,255,0.25); background:rgba(255,255,255,0.2); color:#fff; font-size:1em; }
 .search-header input::placeholder { color:rgba(255,255,255,0.65); }
@@ -160,6 +219,7 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
 .type-btn { flex:1; padding:14px; border:2px solid rgba(59,130,246,0.25); background:rgba(255,255,255,0.5); border-radius:14px; font-size:0.95em; font-weight:600; cursor:pointer; color:#1C1C1E; }
 .type-btn.active { border-color:#3B82F6; background:rgba(59,130,246,0.15); color:#3B82F6; }
 .submit-btn { width:100%; padding:18px; background:#3B82F6; color:#fff; border:none; border-radius:16px; font-size:1.05em; font-weight:700; cursor:pointer; margin-top:12px; }
+.delete-btn { width:100%; padding:18px; background:linear-gradient(135deg, #dc2626, #991b1b); color:#fff; border:none; border-radius:16px; font-size:1.05em; font-weight:700; cursor:pointer; margin-top:10px; }
 .image-upload { border:2px dashed rgba(0,0,0,0.2); border-radius:14px; padding:32px; text-align:center; cursor:pointer; transition:all 0.3s; background:rgba(0,0,0,0.02); }
 .image-upload:hover { border-color:rgba(0,0,0,0.4); }
 .image-upload svg { color:rgba(0,0,0,0.3); margin-bottom:12px; }
@@ -205,8 +265,8 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
       <h2>Les fournisseurs à découvrir</h2>
       <div class="scroll"><div class="list" id="disc-suppliers"></div></div>
     </div>
-    <div class="cats"><div class="list" id="cat-suppliers"></div></div>
     <h2 class="section-title">Tous les fournisseurs</h2>
+    <div class="cats"><div class="list" id="cat-suppliers"></div></div>
     <div class="pinterest" id="pint-suppliers"></div>
   </div>
 
@@ -219,8 +279,8 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
       <h2>Les matériaux à découvrir</h2>
       <div class="scroll"><div class="list" id="disc-materials"></div></div>
     </div>
-    <div class="cats"><div class="list" id="cat-materials"></div></div>
     <h2 class="section-title">Tous les matériaux</h2>
+    <div class="cats"><div class="list" id="cat-materials"></div></div>
     <div class="pinterest" id="pint-materials"></div>
   </div>
 </main>
@@ -322,6 +382,7 @@ body { background:linear-gradient(135deg, var(--bg-start), var(--bg-end)); min-h
   </div>
 
   <button type="submit" class="submit-btn" id="submitBtn">Créer</button>
+  <button type="button" class="delete-btn" id="deleteBtn" style="display:none;">Supprimer</button>
 </form>
 ```
 
@@ -418,6 +479,17 @@ function setupEvents() {
   document.getElementById('addForm').addEventListener('submit', submitForm);
   document.getElementById('closeFavorites').addEventListener('click', closeFavoritesModal);
   document.getElementById('closeDetailBtn').addEventListener('click', closeDetailModal);
+  
+  document.getElementById('deleteBtn').addEventListener('click', () => {
+    if (!editingId) return;
+    if (confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
+      items = items.filter(i => i.id !== editingId);
+      localStorage.setItem('thecraft-items', JSON.stringify(items));
+      closeAddForm();
+      render();
+      alert('✅ Élément supprimé');
+    }
+  });
   
   document.getElementById('imageUploadArea').addEventListener('click', () => {
     document.getElementById('imageUpload').click();
@@ -540,7 +612,25 @@ function renderSuppliers() {
     });
   });
 
-  const rand = [...sups].sort(() => Math.random()-0.5).slice(0,5);
+  // Suggestions du jour avec seed fixe
+  const today = new Date().toDateString();
+  let dailySeed = localStorage.getItem('daily-suppliers-seed');
+  let dailySeedDate = localStorage.getItem('daily-suppliers-date');
+  
+  if (dailySeedDate !== today) {
+    dailySeed = Math.random().toString();
+    localStorage.setItem('daily-suppliers-seed', dailySeed);
+    localStorage.setItem('daily-suppliers-date', today);
+  }
+  
+  const seededRandom = (seed, index) => {
+    const x = Math.sin(parseFloat(seed) + index) * 10000;
+    return x - Math.floor(x);
+  };
+  
+  const supsWithSeeds = sups.map((s, i) => ({ item: s, seed: seededRandom(dailySeed, i) }));
+  const rand = supsWithSeeds.sort((a, b) => a.seed - b.seed).slice(0, 5).map(s => s.item);
+  
   document.getElementById('disc-suppliers').innerHTML = rand.map(i => `
     <div class="disc-card" data-item-id="${i.id}">
       <img src="${i.image}">
@@ -596,7 +686,25 @@ function renderMaterials() {
     });
   });
 
-  const rand = [...mats].sort(() => Math.random()-0.5).slice(0,5);
+  // Suggestions du jour avec seed fixe
+  const today = new Date().toDateString();
+  let dailySeed = localStorage.getItem('daily-materials-seed');
+  let dailySeedDate = localStorage.getItem('daily-materials-date');
+  
+  if (dailySeedDate !== today) {
+    dailySeed = Math.random().toString();
+    localStorage.setItem('daily-materials-seed', dailySeed);
+    localStorage.setItem('daily-materials-date', today);
+  }
+  
+  const seededRandom = (seed, index) => {
+    const x = Math.sin(parseFloat(seed) + index) * 10000;
+    return x - Math.floor(x);
+  };
+  
+  const matsWithSeeds = mats.map((m, i) => ({ item: m, seed: seededRandom(dailySeed, i) }));
+  const rand = matsWithSeeds.sort((a, b) => a.seed - b.seed).slice(0, 5).map(m => m.item);
+  
   document.getElementById('disc-materials').innerHTML = rand.map(i => `
     <div class="disc-card" data-item-id="${i.id}">
       <img src="${i.image}">
@@ -661,12 +769,14 @@ function switchTab(tab) {
 function openSearch() {
   document.getElementById('searchModal').classList.add('active');
   document.getElementById('searchInput').focus();
+  document.body.classList.add('modal-open'); // Bloquer scroll
 }
 
 function closeSearch() {
   document.getElementById('searchModal').classList.remove('active');
   document.getElementById('searchInput').value = '';
   document.getElementById('searchResults').innerHTML = '';
+  document.body.classList.remove('modal-open'); // Débloquer scroll
 }
 
 function performSearch() {
@@ -787,11 +897,13 @@ function openFavoritesModal() {
   }
   
   modal.classList.add('active');
+  document.body.classList.add('modal-open'); // Bloquer scroll
   toggleMenu();
 }
 
 function closeFavoritesModal() {
   document.getElementById('favoritesModal').classList.remove('active');
+  document.body.classList.remove('modal-open'); // Débloquer scroll
 }
 
 function handleImageUpload(e) {
@@ -830,6 +942,7 @@ function openAddForm() {
   
   selectType('material');
   document.getElementById('addModal').classList.add('active');
+  document.getElementById('deleteBtn').style.display = 'none'; // Cacher le bouton supprimer
 }
 
 function closeAddForm() {
@@ -934,6 +1047,7 @@ function editItem(id) {
   
   selectType(item.type);
   document.getElementById('addModal').classList.add('active');
+  document.getElementById('deleteBtn').style.display = 'block'; // Afficher le bouton supprimer
 }
 
 function syncToiCloud() {
