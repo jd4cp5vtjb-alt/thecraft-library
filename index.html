@@ -24,7 +24,7 @@
 :root {
 /* COULEURS DE BASE */
 –bg: #FFFFFF;                    /* Fond principal */
-–text: #0F172A;                  /* TOUTES les écritures (bleu presque noir) */
+–text: #000000;                  /* TOUTES les écritures (NOIR) */
 –text-secondary: #64748B;        /* Texte secondaire */
 
 /* ÉLÉMENTS UI */
@@ -47,8 +47,8 @@
 
 /* 🌙 THÈME SOMBRE (DÉSACTIVÉ - décommente pour activer)
 :root {
-–bg: #0F172A;
-–text: #F1F5F9;
+–bg: #1E3A8A;
+–text: #FFFFFF;
 –text-secondary: #94A3B8;
 
 –card: rgba(255,255,255,0.05);
@@ -59,7 +59,7 @@
 –accent-hover: #60A5FA;
 
 –overlay: rgba(0,0,0,0.8);
-–overlay-text: #F1F5F9;
+–overlay-text: #FFFFFF;
 
 –fab-bg: rgba(255,255,255,0.08);
 –fab-border: rgba(255,255,255,0.15);
@@ -128,6 +128,7 @@ transition: background 0.2s;
 .menu-item:hover {
 background: var(–bg);
 }
+.menu-item:hover { background:rgba(255,255,255,0.2); }
 
 .page-header { padding:24px 20px 8px; }
 .page-subtitle { font-size:0.8em; opacity:0.85; text-transform:uppercase; letter-spacing:1.2px; margin-bottom:6px; }
@@ -307,6 +308,7 @@ flex-shrink: 0;
 .disc-card:active {
 transform: scale(0.97);
 }
+.disc-card:hover { transform:translateY(-4px); }
 .disc-card img { width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; display:block; }
 .disc-card .name { position:absolute; bottom:0; left:0; right:0; padding:20px 16px; background:linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
 .disc-card h4 { font-size:1.1em; font-weight:700; }
@@ -1420,35 +1422,30 @@ function importData() {
       try {
         const newItems = JSON.parse(ev.target.result);
         
-        // FUSION INTELLIGENTE : Ajoute nouveaux + met à jour existants
-        const existingIds = new Set(items.map(i => i.id));
+        // FUSION : Ajoute nouveaux + met à jour existants
         let added = 0;
         let updated = 0;
         
         newItems.forEach(newItem => {
           const existingIndex = items.findIndex(i => i.id === newItem.id);
           if (existingIndex >= 0) {
-            // Met à jour l'item existant
             items[existingIndex] = newItem;
             updated++;
           } else {
-            // Ajoute le nouvel item
             items.push(newItem);
             added++;
           }
         });
         
         localStorage.setItem('thecraft-items', JSON.stringify(items));
-        loadDaily(); // Regénérer les découvertes après import
+        loadDaily();
         render();
         
-        // Message détaillé
-        let message = '✅ Import réussi !\n';
-        if (added > 0) message += `• ${added} nouveaux items ajoutés\n`;
-        if (updated > 0) message += `• ${updated} items mis à jour\n`;
-        message += `\nTotal : ${items.length} items`;
-        alert(message);
-        
+        let msg = '✅ Import réussi !\n';
+        if (added > 0) msg += `${added} nouveaux\n`;
+        if (updated > 0) msg += `${updated} mis à jour\n`;
+        msg += `Total : ${items.length}`;
+        alert(msg);
       } catch(err) {
         alert('❌ Erreur: fichier JSON invalide');
         console.error(err);
