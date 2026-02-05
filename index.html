@@ -43,6 +43,10 @@
 /* FAB */
 –fab-bg: rgba(255,255,255,0.5);  /* Fond FAB moins opaque */
 –fab-border: rgba(0,0,0,0.1);    /* Bordure FAB fine */
+
+/* TAGS */
+–tag-bg: rgba(59, 130, 246, 0.1); /* Fond tags */
+–tag-text: #3B82F6;               /* Texte tags */
 }
 
 /* 🌙 THÈME SOMBRE (DÉSACTIVÉ - décommente pour activer)
@@ -63,6 +67,9 @@
 
 –fab-bg: rgba(255,255,255,0.08);
 –fab-border: rgba(255,255,255,0.15);
+
+–tag-bg: rgba(255,255,255,0.15);
+–tag-text: #FFFFFF;
 }
 */
 
@@ -279,7 +286,7 @@ transition: transform 0.3s;
 .pint-item img { width:100%; display:block; object-fit:cover; min-height:180px; max-height:280px; }
 .pint-item.tall img { height:280px; }
 .pint-item.short img { height:180px; }
-.pint-item .info { padding:14px; background:var(–card-bg); backdrop-filter:blur(20px); }
+.pint-item .info { padding:14px; background:var(–card); backdrop-filter:blur(20px); }
 .pint-item h3 { font-size:1em; font-weight:700; margin-bottom:8px; }
 .pint-item .tag {
 background:var(–tag-bg);
