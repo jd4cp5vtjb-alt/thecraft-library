@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="TheCraft Library">
+<meta name="msapplication-TileColor" content="#1E3A8A">
+<meta name="theme-color" content="#1E3A8A">
+<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icon.png">
+<title>TheCraft Library V21</title>
+<link rel="manifest" href="manifest.json">
+<style>
+/* ========================================
+   🎨 SYSTÈME DE THÈMES UNIFIÉ
+   Change juste les variables → Tout change !
+   ======================================== */
+
+/* ==============================================
+   🎨 THÈMES AUTOMATIQUES iOS
+   Change automatiquement selon Centre de Contrôle
+   ============================================== */
+
+/* ☀️ THÈME CLAIR (par défaut) */
+:root {
+  --bg: #FFFFFF;
+  --text: #000000;
+  --text-secondary: #64748B;
+  --card: #FFFFFF;
+  --border: #E2E8F0;
+  --shadow: rgba(0,0,0,0.08);
+  --accent: #3B82F6;
+  --accent-hover: #2563EB;
+  --overlay: rgba(0,0,0,0.7);
+  --overlay-text: #FFFFFF;
+  --fab-bg: rgba(255,255,255,0.3);
+  --fab-border: rgba(0,0,0,0.1);
+  --tag-bg: rgba(59,130,246,0.1);
+  --tag-text: #3B82F6;
+  --modal-bg: #FFFFFF;
+  --modal-text: #000000;
+}
+
+/* 🌙 THÈME SOMBRE (auto quand iOS en mode sombre) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1E3A8A;
+    --text: #FFFFFF;
+    --text-secondary: #94A3B8;
+    --card: #1E3A8A;
+    --border: rgba(255,255,255,0.2);
+    --shadow: rgba(0,0,0,0.5);
+    --accent: #3B82F6;
+    --accent-hover: #60A5FA;
+    --overlay: rgba(0,0,0,0.8);
+    --overlay-text: #FFFFFF;
+    --fab-bg: rgba(30,58,138,0.3);
+    --fab-border: rgba(255,255,255,0.2);
+    --tag-bg: rgba(59,130,246,0.2);
+    --tag-text: #60A5FA;
+    --modal-bg: #1E3A8A;
+    --modal-text: #FFFFFF;
+  }
+}
+
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* FOND - Adaptable selon thème */
+html { 
+  background: #1E3A8A;  /* Fallback bleu (si variable pas supportée) */
+  background: var(--bg) !important;  /* Variable qui ÉCRASE */
+}
+body { 
+  background: #1E3A8A;  /* Fallback bleu (si variable pas supportée) */
+  background: var(--bg) !important;  /* Variable qui ÉCRASE */
+  min-height: 100vh; 
+  color: var(--text); 
+  padding-bottom: 100px; 
+}
+
+.menu-btn { 
+  position: fixed; 
+  top: 20px; 
+  right: 20px; 
+  width: 44px; 
+  height: 44px; 
+  background: var(--fab-bg); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 50%; 
+  border: 1px solid var(--border); 
+  cursor: pointer; 
+  z-index: 1000; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 5px; 
+  align-items: center; 
+  justify-content: center; 
+  box-shadow: 0 4px 12px var(--shadow);
+}
+.menu-btn span { 
+  width: 18px; 
+  height: 2px; 
+  background: var(--text-secondary); 
+  border-radius: 2px; 
+}
+.menu-dropdown { 
+  position: fixed; 
+  top: 75px; 
+  right: 20px; 
+  background: var(--card); 
+  border-radius: 16px; 
+  padding: 8px; 
+  z-index: 999; 
+  display: none; 
+  min-width: 180px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px var(--shadow);
+}
+.menu-dropdown.active { display:block; }
+.menu-item { 
+  padding: 14px 18px; 
+  border-radius: 12px; 
+  cursor: pointer; 
+  color: var(--text); 
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.menu-item:hover { 
+  background: var(--bg); 
+}
+.menu-item:hover { background:rgba(255,255,255,0.2); }
+
+.page-header { padding:24px 20px 8px; }
+.page-subtitle { font-size:0.8em; opacity:0.85; text-transform:uppercase; letter-spacing:1.2px; margin-bottom:6px; }
+.page-title { font-size:2.2em; font-weight:900; letter-spacing:-0.8px; }
+
+.section-title { font-size:1.5em; font-weight:800; padding:0 20px; margin:32px 0 16px; }
+
+.scroll-h { overflow-x:auto; -webkit-overflow-scrolling:touch; margin-bottom:32px; }
+.scroll-h::-webkit-scrollbar { display:none; }
+.scroll-h .cards { display:flex; gap:16px; padding:0 20px; }
+
+.h-card { 
+  min-width: 280px; 
+  height: 340px; 
+  border-radius: 24px; 
+  background: var(--card); 
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px var(--shadow);
+  position: relative; 
+  cursor: pointer; 
+  transition: transform 0.3s, box-shadow 0.3s; 
+  overflow: hidden; 
+  flex-shrink: 0; 
+}
+.h-card:active { 
+  transform: scale(0.97); 
+}
+.h-card:hover { transform:translateY(-6px); }
+.h-card img { width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; display:block; }
+.h-card .overlay { 
+  position: absolute; 
+  bottom: 0; 
+  left: 0; 
+  right: 0; 
+  padding: 24px 20px; 
+  background: linear-gradient(to top, var(--overlay), transparent); 
+  z-index: 1; 
+  color: var(--overlay-text);
+}
+.h-card h3 { font-size:1.3em; font-weight:800; }
+.h-card .tag { 
+  font-size:0.7em; 
+  background:var(--tag-bg); 
+  color:var(--tag-text);
+  padding:6px 12px; 
+  border-radius:8px; 
+  display:inline-block; 
+  margin-bottom:8px;
+  font-weight:600;
+}
+
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; padding:0 20px; margin-bottom:32px; }
+.card { 
+  min-height: 340px; 
+  height: 340px; 
+  border-radius: 24px; 
+  background: var(--card); 
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px var(--shadow);
+  position: relative; 
+  cursor: pointer; 
+  transition: transform 0.3s, box-shadow 0.3s; 
+  overflow: hidden; 
+}
+.card:active { 
+  transform: scale(0.97); 
+}
+.card:hover { transform:translateY(-6px); }
+.card img { width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; display:block; }
+.card .overlay { 
+  position: absolute; 
+  bottom: 0; 
+  left: 0; 
+  right: 0; 
+  padding: 28px 20px; 
+  background: linear-gradient(to top, var(--overlay), transparent); 
+  z-index: 1; 
+  color: var(--overlay-text);
+}
+.card h3 { font-size:1.5em; font-weight:800; }
+.card .tag { 
+  font-size:0.75em; 
+  background:var(--tag-bg); 
+  color:var(--tag-text);
+  padding:6px 12px; 
+  border-radius:10px; 
+  display:inline-block; 
+  margin-bottom:10px;
+  font-weight:600;
+}
+
+.fav-btn { position:absolute; top:16px; right:16px; font-size:1.6em; cursor:pointer; z-index:10; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.3)); user-select:none; }
+.fav-btn:hover { transform:scale(1.15); }
+
+.cats { overflow-x:auto; padding:16px 0; margin-bottom:24px; }
+.cats::-webkit-scrollbar { display:none; }
+.cats .list { display:flex; gap:10px; padding:0 20px; }
+.cat-chip { 
+  padding: 10px 18px; 
+  border-radius: 20px; 
+  background: var(--card); 
+  border: 1px solid var(--border); 
+  font-size: 0.9em; 
+  font-weight: 600; 
+  cursor: pointer; 
+  white-space: nowrap;
+  color: var(--text);
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.cat-chip:hover { 
+  background: var(--bg); 
+  border-color: var(--accent);
+}
+.cat-chip.active { 
+  background: var(--accent); 
+  border-color: var(--accent);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+.cat-chip:hover { background:rgba(255,255,255,0.35); }
+.cat-chip.active { background:rgba(255,255,255,0.45); border-color:#fff; }
+
+.pinterest { padding:0 16px; column-count:2; column-gap:16px; }
+@media (min-width:600px) { .pinterest { column-count:3; } }
+.pint-item { 
+  break-inside: avoid; 
+  margin-bottom: 16px; 
+  background: var(--card); 
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 12px var(--shadow);
+  border-radius: 20px; 
+  overflow: hidden; 
+  cursor: pointer; 
+  display: inline-block; 
+  width: 100%; 
+  position: relative; 
+  transition: transform 0.3s; 
+}
+.pint-item:hover { transform:translateY(-6px); }
+.pint-item img { width:100%; display:block; object-fit:cover; min-height:180px; max-height:280px; }
+.pint-item.tall img { height:280px; }
+.pint-item.short img { height:180px; }
+.pint-item .info { padding:14px; background:var(--card); backdrop-filter:blur(20px); }
+.pint-item h3 { font-size:1em; font-weight:700; margin-bottom:8px; }
+.pint-item .tag { 
+  background:var(--tag-bg); 
+  color:var(--tag-text);
+  padding:6px 12px; 
+  border-radius:8px; 
+  font-size:0.7em; 
+  font-weight:600; 
+  display:inline-block; 
+  margin-bottom:6px; 
+}
+.pint-item .price { font-size:0.9em; font-weight:700; margin-top:6px; background:rgba(255,255,255,0.2); padding:6px 12px; border-radius:8px; display:inline-block; }
+
+.discover { margin-bottom:32px; }
+.discover h2 { font-size:1.5em; font-weight:800; padding:0 20px; margin-bottom:16px; }
+.discover .scroll { overflow-x:auto; }
+.discover .scroll::-webkit-scrollbar { display:none; }
+.discover .list { display:flex; gap:16px; padding:0 20px; }
+.disc-card { 
+  min-width: 240px; 
+  width: 240px; 
+  height: 280px; 
+  border-radius: 20px; 
+  background: var(--card); 
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 16px var(--shadow);
+  position: relative; 
+  cursor: pointer; 
+  overflow: hidden; 
+  transition: transform 0.3s, box-shadow 0.3s; 
+  flex-shrink: 0; 
+}
+.disc-card:active { 
+  transform: scale(0.97); 
+}
+.disc-card:hover { transform:translateY(-4px); }
+.disc-card img { width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; display:block; }
+.disc-card .name { position:absolute; bottom:0; left:0; right:0; padding:20px 16px; background:linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
+.disc-card h4 { font-size:1.1em; font-weight:700; }
+
+.tab-bar { 
+  position: fixed; 
+  bottom: 20px; 
+  left: 20px; 
+  right: 20px; 
+  background: var(--card); 
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px var(--shadow);
+  border-radius: 50px; 
+  display: flex; 
+  justify-content: space-around; 
+  padding: 8px 6px; 
+  z-index: 100; 
+}
+.tab-item { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  padding: 10px 12px; 
+  border-radius: 20px; 
+  cursor: pointer; 
+  background: transparent; 
+  border: none; 
+  color: var(--text-secondary); 
+  min-width: 60px;
+  font-size: 0.75em;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+.tab-item.active { 
+  color: var(--accent);
+  font-weight: 600;
+}
+.tab-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+.tab-item span { font-size: 0.9em; margin-top: 4px; font-weight: 600; }
+
+.fab { 
+  position: fixed; 
+  bottom: 100px; 
+  right: 24px; 
+  width: 44px; 
+  height: 44px; 
+  border-radius: 50%; 
+  background: var(--fab-bg); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  color: var(--text-secondary); 
+  font-size: 24px; 
+  cursor: pointer; 
+  z-index: 99; 
+  box-shadow: 0 4px 12px var(--shadow); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  transition: transform 0.2s;
+}
+.fab:active { 
+  transform: scale(0.92); 
+}
+
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+.empty { text-align:center; padding:80px 20px; opacity:0.7; }
+.empty h3 { font-size:1.3em; margin-bottom:10px; }
+
+.favorites-modal { 
+  display:none; 
+  position:fixed; 
+  top:0; 
+  left:0; 
+  right:0; 
+  bottom:0; 
+  background:rgba(0,0,0,0.5); 
+  backdrop-filter:blur(20px); 
+  -webkit-backdrop-filter:blur(20px);
+  z-index:3000; 
+  padding:0;
+}
+.favorites-modal.active { 
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+}
+.favorites-close { position:fixed; top:20px; right:20px; width:44px; height:44px; background:rgba(255,255,255,0.25); backdrop-filter:blur(20px); border-radius:50%; border:none; font-size:1.3em; color:#fff; cursor:pointer; z-index:3001; display:flex; align-items:center; justify-content:center; }
+.favorites-scroll { 
+  width:100%; 
+  max-width:100vw; 
+  height:100%; 
+  overflow-x:auto; 
+  overflow-y:hidden; 
+  -webkit-overflow-scrolling:touch; 
+  scroll-snap-type:x mandatory;
+  display:flex;
+  align-items:center;
+  padding:40px 0;
+}
+.favorites-scroll::-webkit-scrollbar { display:none; }
+.favorites-list { 
+  display:flex; 
+  gap:20px; 
+  padding:0 calc(50vw - 150px);
+  align-items:center;
+}
+.favorite-slide {
+  scroll-snap-align:center;
+  scroll-snap-stop:always;
+}
+.favorites-list { display:flex; height:100%; align-items:center; padding:0 20px; }
+.favorite-slide { min-width:calc(100vw - 80px); width:calc(100vw - 80px); height:85vh; margin:0 20px; display:flex; flex-direction:column; scroll-snap-align:center; position:relative; border-radius:24px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.4); flex-shrink:0; }
+.favorite-slide img { width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; }
+.favorite-slide .info-overlay { position:absolute; bottom:0; left:0; right:0; padding:32px 24px; background:linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 40%, transparent 70%); }
+.favorite-slide .badge { display:inline-block; background:rgba(255,255,255,0.25); backdrop-filter:blur(10px); padding:6px 14px; border-radius:12px; font-size:0.75em; text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:12px; color:#fff; }
+.favorite-slide h2 { font-size:2em; font-weight:900; margin-bottom:8px; color:#fff; }
+.favorite-slide .supplier { font-size:1.1em; opacity:0.9; font-weight:600; margin-bottom:12px; color:#fff; }
+.favorite-slide .description { font-size:0.95em; opacity:0.85; line-height:1.5; color:#fff; }
+.favorites-empty { display:flex; align-items:center; justify-content:center; height:100%; width:100%; flex-direction:column; padding:40px; text-align:center; }
+.favorites-empty h2 { font-size:2em; font-weight:900; margin-bottom:16px; color:#fff; }
+.favorites-empty p { font-size:1.1em; opacity:0.8; color:#fff; }
+
+.search-modal { 
+  display:none; 
+  position:fixed; 
+  top:0; 
+  left:0; 
+  right:0; 
+  bottom:0; 
+  background:rgba(30, 58, 138, 0.95); 
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index:2000; 
+  padding:20px; 
+  padding-top:70px;
+  overflow-y: auto;
+}
+.search-modal.active { 
+  display:block; 
+}
+/* Bloquer le scroll de la page principale quand modal ouvert */
+body.modal-open { 
+  overflow: hidden; 
+  position: fixed; 
+  width: 100%; 
+}
+.search-header { display:flex; gap:12px; margin-bottom:20px; }
+.search-header input { flex:1; padding:14px 18px; border-radius:16px; border:1px solid rgba(255,255,255,0.25); background:rgba(255,255,255,0.2); color:#fff; font-size:1em; }
+.search-header input::placeholder { color:rgba(255,255,255,0.65); }
+.search-header button { background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.25); padding:12px 20px; border-radius:14px; color:#fff; font-weight:600; cursor:pointer; }
+
+.detail-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); z-index:4000; overflow-y:auto; }
+.detail-modal.active { display:block; }
+.detail-content { background:var(--modal-bg); margin:60px 20px; border-radius:28px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.4); }
+.detail-header { position:sticky; top:0; background:var(--modal-bg); backdrop-filter:blur(30px); padding:16px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); z-index:100; }
+.detail-header h2 { font-size:1.1em; font-weight:700; color:var(--modal-text); }
+.detail-header button { background:rgba(0,0,0,0.05); border:1px solid var(--border); border-radius:12px; width:38px; height:38px; font-size:1.3em; color:var(--modal-text); cursor:pointer; }
+.detail-content img { width:100%; max-height:400px; object-fit:cover; }
+.detail-info { padding:28px; }
+.detail-info h1 { font-size:2em; font-weight:800; margin-bottom:14px; color:var(--modal-text); }
+.detail-meta { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
+.detail-meta .meta-tag { background:var(--tag-bg); padding:8px 16px; border-radius:12px; font-size:0.9em; color:var(--tag-text); font-weight:600; border:1px solid var(--tag-bg); }
+.detail-info p { margin-bottom:16px; color:var(--modal-text); font-size:1em; line-height:1.7; opacity:0.8; }
+.detail-info strong { font-weight:700; opacity:1; }
+.detail-actions { display:flex; gap:12px; padding:0 28px 32px; }
+.detail-actions button { flex:1; padding:16px; border-radius:16px; border:none; font-size:1.05em; font-weight:700; cursor:pointer; }
+.detail-actions .edit-btn { background:var(--accent); color:#fff; }
+
+.modal-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); z-index:3000; overflow-y:auto; align-items:center; justify-content:center; }
+.modal-overlay.active { display:flex; }
+.add-form { background:var(--modal-bg); width:calc(100% - 40px); max-width:500px; border-radius:28px; padding:28px; max-height:90vh; overflow-y:auto; }
+.form-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+.form-header h2 { font-size:1.4em; font-weight:800; color:var(--modal-text); }
+.form-header button { background:rgba(0,0,0,0.08); border:none; width:36px; height:36px; border-radius:50%; font-size:1.1em; cursor:pointer; color:var(--modal-text); }
+.form-group { margin-bottom:20px; }
+.form-group label { display:block; font-size:0.85em; font-weight:600; color:var(--modal-text); opacity:0.7; margin-bottom:8px; }
+.form-group input, .form-group select, .form-group textarea { width:100%; padding:14px 16px; border-radius:14px; border:1px solid var(--border); font-size:1em; background:var(--modal-bg); color:var(--modal-text); }
+.form-group textarea { resize:vertical; min-height:80px; }
+.type-selector { display:flex; gap:12px; margin-bottom:24px; }
+.type-btn { flex:1; padding:14px; border:2px solid rgba(59,130,246,0.25); background:rgba(255,255,255,0.5); border-radius:14px; font-size:0.95em; font-weight:600; cursor:pointer; color:var(--modal-text); }
+.type-btn.active { border-color:var(--accent); background:var(--tag-bg); color:var(--accent); }
+.submit-btn { width:100%; padding:18px; background:var(--accent); color:#fff; border:none; border-radius:16px; font-size:1.05em; font-weight:700; cursor:pointer; margin-top:12px; }
+.delete-btn { width:100%; padding:18px; background:linear-gradient(135deg, #dc2626, #991b1b); color:#fff; border:none; border-radius:16px; font-size:1.05em; font-weight:700; cursor:pointer; margin-top:10px; }
+.image-upload { border:2px dashed rgba(0,0,0,0.2); border-radius:14px; padding:32px; text-align:center; cursor:pointer; transition:all 0.3s; background:rgba(0,0,0,0.02); }
+.image-upload:hover { border-color:rgba(0,0,0,0.4); }
+.image-upload svg { color:rgba(0,0,0,0.3); margin-bottom:12px; }
+.image-upload p { color:rgba(0,0,0,0.5); font-size:0.95em; }
+.image-upload.has-image { border-style:solid; padding:0; }
+.image-upload.has-image img { width:100%; height:200px; object-fit:cover; border-radius:12px; }
+</style>
+</head>
+<body>
+
+<button class="menu-btn" id="menuBtn">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+<div class="menu-dropdown" id="menu">
+  <div class="menu-item" id="syncBtn">☁️ Sync iCloud</div>
+  <div class="menu-item" id="importBtn">📥 Importer</div>
+  <div class="menu-item" id="favBtn">❤️ Favoris</div>
+</div>
+
+<main>
+  <div class="tab-content active" id="home">
+    <div class="page-header">
+      <div class="page-subtitle">Bibliothèque de matériaux</div>
+      <h1 class="page-title">TheCraft Library</h1>
+    </div>
+    <h2 class="section-title">Les dernières nouveautés</h2>
+    <div class="scroll-h"><div class="cards" id="latest"></div></div>
+    <h2 class="section-title">Les coups de cœur</h2>
+    <div class="grid" id="favorites"></div>
+    <h2 class="section-title">À découvrir aujourd'hui</h2>
+    <div class="grid" id="daily"></div>
+  </div>
+
+  <div class="tab-content" id="suppliers">
+    <div class="page-header">
+      <div class="page-subtitle">Annuaire professionnel</div>
+      <h1 class="page-title">Fournisseurs</h1>
+    </div>
+    <div class="discover">
+      <h2>Les fournisseurs à découvrir</h2>
+      <div class="scroll"><div class="list" id="disc-suppliers"></div></div>
+    </div>
+    <h2 class="section-title">Tous les fournisseurs</h2>
+    <div class="cats"><div class="list" id="cat-suppliers"></div></div>
+    <div class="pinterest" id="pint-suppliers"></div>
+  </div>
+
+  <div class="tab-content" id="materials">
+    <div class="page-header">
+      <div class="page-subtitle">Collection complète</div>
+      <h1 class="page-title">Matériaux</h1>
+    </div>
+    <div class="discover">
+      <h2>Les matériaux à découvrir</h2>
+      <div class="scroll"><div class="list" id="disc-materials"></div></div>
+    </div>
+    <h2 class="section-title">Tous les matériaux</h2>
+    <div class="cats"><div class="list" id="cat-materials"></div></div>
+    <div class="pinterest" id="pint-materials"></div>
+  </div>
+</main>
+
+<button class="fab" id="fabBtn">+</button>
+
+<nav class="tab-bar">
+  <button class="tab-item active" data-tab="home">
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Accueil</span>
+  </button>
+  <button class="tab-item" data-tab="suppliers">
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+    <span>Fournisseurs</span>
+  </button>
+  <button class="tab-item" data-tab="materials">
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <span>Matériaux</span>
+  </button>
+  <button class="tab-item" id="searchBtn">
+    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <span>Recherche</span>
+  </button>
+</nav>
+
+<div class="search-modal" id="searchModal">
+  <div class="search-header">
+    <input type="text" placeholder="Rechercher..." id="searchInput">
+    <button id="closeSearch">Annuler</button>
+  </div>
+  <div class="search-results" id="searchResults"></div>
+</div>
+
+<div class="modal-overlay" id="addModal">
+  <div class="add-form">
+    <div class="form-header">
+      <h2 id="formTitle">Ajouter</h2>
+      <button id="closeAddForm">✕</button>
+    </div>
+
+    <div class="type-selector">
+      <button class="type-btn active" data-type="material">Matériau</button>
+      <button class="type-btn" data-type="supplier">Fournisseur</button>
+    </div>
+
+    <form id="addForm">
+      <div class="form-group">
+        <label for="imageUpload">Photo</label>
+        <input type="file" id="imageUpload" accept="image/*" style="display:none;">
+        <div class="image-upload" id="imageUploadArea">
+          <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" fill="none" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <p>Ajouter une photo</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="itemName">Nom *</label>
+        <input type="text" id="itemName" required>
+      </div>
+
+      <div class="form-group">
+        <label for="itemCategory">Catégorie</label>
+        <input type="text" id="itemCategory" placeholder="ex: Bois, Pierre, Métal...">
+      </div>
+
+      <div class="form-group material-only">
+        <label for="itemSupplier">Fournisseur</label>
+        <input type="text" id="itemSupplier" placeholder="ex: Bois & Nature">
+      </div>
+
+      <div class="form-group material-only">
+        <label for="itemPrice">Prix</label>
+        <input type="text" id="itemPrice" placeholder="ex: 150€/m²">
+      </div>
+
+      <div class="form-group supplier-only" style="display:none;">
+        <label for="itemPhone">Téléphone</label>
+        <input type="tel" id="itemPhone" placeholder="ex: +33 1 23 45 67 89">
+      </div>
+
+      <div class="form-group supplier-only" style="display:none;">
+        <label for="itemEmail">Email</label>
+        <input type="email" id="itemEmail" placeholder="ex: contact@fournisseur.fr">
+      </div>
+
+      <div class="form-group supplier-only" style="display:none;">
+        <label for="itemWebsite">Site web</label>
+        <input type="url" id="itemWebsite" placeholder="ex: https://www.fournisseur.fr">
+      </div>
+
+      <div class="form-group">
+        <label for="itemDescription">Description</label>
+        <textarea id="itemDescription" placeholder="Description..."></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Créer</button>
+      <button type="button" class="delete-btn" id="deleteBtn" style="display:none;">Supprimer</button>
+    </form>
+  </div>
+</div>
+
+<div class="favorites-modal" id="favoritesModal">
+  <button class="favorites-close" id="closeFavorites">✕</button>
+  <div class="favorites-scroll" id="favoritesScroll">
+    <div class="favorites-list" id="favoritesList"></div>
+  </div>
+</div>
+
+<div class="detail-modal" id="detailModal">
+  <div class="detail-content">
+    <div class="detail-header">
+      <h2>Détails</h2>
+      <button id="closeDetailBtn">✕</button>
+    </div>
+    <div id="detailBody"></div>
+  </div>
+</div>
+
+<script>
+let items = [
+  {id:'1',type:'material',name:'Chêne Massif',category:'Bois',price:'245€/m²',contact:'Bois & Nature',description:'Bois de chêne massif naturel',image:'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%23a0826d" width="400" height="300"/%3E%3C/svg%3E',favorite:true,createdAt:Date.now()-86400000*5,updatedAt:Date.now()-86400000*2},
+  {id:'2',type:'supplier',name:'Bois & Nature',category:'Menuiserie',contact:'www.boisnature.fr',description:'Spécialiste bois et parquets',image:'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%238b4513" width="400" height="300"/%3E%3C/svg%3E',favorite:true,createdAt:Date.now()-86400000*3,updatedAt:Date.now()},
+  {id:'3',type:'material',name:'Marbre Calacatta',category:'Pierre',price:'580€/m²',contact:'Marbre Prestige',description:'Marbre italien avec veines dorées',image:'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%23f5f5f0" width="400" height="300"/%3E%3C/svg%3E',favorite:false,createdAt:Date.now()-86400000*7,updatedAt:Date.now()-86400000*7},
+  {id:'4',type:'material',name:'Acier Inoxydable',category:'Métal',price:'180€/m²',contact:'Métal Concept',description:'Acier inoxydable 304 brossé',image:'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%23b8c5d6" width="400" height="300"/%3E%3C/svg%3E',favorite:false,createdAt:Date.now()-86400000*1,updatedAt:Date.now()-86400000*1}
+];
+
+let daily = [];
+let activeCategorySuppliers = 'Tous';
+let activeCategoryMaterials = 'Tous';
+let selectedType = 'material';
+let uploadedImageUrl = '';
+let editingId = null;
+
+function init() {
+  loadFromStorage();
+  loadDaily();
+  render();
+  setupEvents();
+}
+
+async function loadFromStorage() {
+  // 1. PRIORITÉ : Charger depuis localStorage
+  const stored = localStorage.getItem('thecraft-items');
+  if (stored) {
+    try {
+      items = JSON.parse(stored);
+      console.log('✅ Chargé depuis localStorage:', items.length, 'items');
+      return; // On s'arrête là, on a les données !
+    } catch (e) {
+      console.error('❌ Erreur parse localStorage:', e);
+    }
+  }
+  
+  // 2. FALLBACK : Si localStorage vide, charger depuis GitHub (première fois)
+  try {
+    const resMat = await fetch('https://raw.githubusercontent.com/jd4cp5vtjb-alt/thecraft-library/main/materials.json');
+    if (resMat.ok) {
+      const materials = await resMat.json();
+      
+      const resSup = await fetch('https://raw.githubusercontent.com/jd4cp5vtjb-alt/thecraft-library/main/suppliers.json');
+      if (resSup.ok) {
+        const suppliers = await resSup.json();
+        
+        // Combiner et sauvegarder
+        items = [...materials, ...suppliers];
+        localStorage.setItem('thecraft-items', JSON.stringify(items));
+        console.log('✅ Chargé depuis GitHub (première fois):', items.length, 'items');
+        return;
+      }
+    }
+  } catch (e) {
+    console.log('⚠️ GitHub non accessible');
+  }
+  
+  // 3. Si rien trouvé, items reste vide (première installation)
+  console.log('ℹ️ Première installation - Aucune donnée');
+}
+
+function setupEvents() {
+  document.getElementById('menuBtn').addEventListener('click', toggleMenu);
+  document.getElementById('syncBtn').addEventListener('click', syncToiCloud);
+  document.getElementById('importBtn').addEventListener('click', importData);
+  document.getElementById('favBtn').addEventListener('click', openFavoritesModal);
+  document.getElementById('fabBtn').addEventListener('click', openAddForm);
+  document.getElementById('searchBtn').addEventListener('click', openSearch);
+  document.getElementById('closeSearch').addEventListener('click', closeSearch);
+  document.getElementById('searchInput').addEventListener('input', performSearch);
+  document.getElementById('closeAddForm').addEventListener('click', closeAddForm);
+  document.getElementById('addForm').addEventListener('submit', submitForm);
+  document.getElementById('closeFavorites').addEventListener('click', closeFavoritesModal);
+  document.getElementById('closeDetailBtn').addEventListener('click', closeDetailModal);
+  
+  document.getElementById('deleteBtn').addEventListener('click', () => {
+    if (!editingId) return;
+    if (confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
+      items = items.filter(i => i.id !== editingId);
+      localStorage.setItem('thecraft-items', JSON.stringify(items));
+      closeAddForm();
+      render();
+      alert('✅ Élément supprimé');
+    }
+  });
+  
+  document.getElementById('imageUploadArea').addEventListener('click', () => {
+    document.getElementById('imageUpload').click();
+  });
+  
+  document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
+  
+  document.querySelectorAll('.tab-item[data-tab]').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  });
+
+  document.querySelectorAll('.type-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedType = btn.dataset.type;
+      selectType(btn.dataset.type);
+    });
+  });
+
+  document.getElementById('addModal').addEventListener('click', e => {
+    if (e.target.id === 'addModal') closeAddForm();
+  });
+
+  document.addEventListener('click', e => {
+    const menu = document.getElementById('menu');
+    const btn = document.getElementById('menuBtn');
+    if (!menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.classList.remove('active');
+    }
+  });
+}
+
+function loadDaily() {
+  console.log('📅 loadDaily appelée, items:', items.length);
+  
+  const today = new Date().toDateString();
+  const stored = localStorage.getItem('daily-suggestions');
+  
+  if (stored) {
+    const data = JSON.parse(stored);
+    if (data.date === today && data.ids && data.ids.length > 0) {
+      daily = data.ids;
+      console.log('✅ Daily chargé depuis cache:', daily.length);
+      return;
+    }
+  }
+  
+  // Prendre TOUS les items, pas seulement non-fav
+  if (items.length === 0) {
+    console.warn('⚠️ Aucun item disponible');
+    daily = [];
+    return;
+  }
+  
+  // Shuffle et prendre jusqu'à 6 items
+  const shuffled = [...items].sort(() => Math.random() - 0.5);
+  daily = shuffled.slice(0, Math.min(6, items.length)).map(i => i.id);
+  
+  console.log('✅ Daily généré:', daily.length, 'items');
+  localStorage.setItem('daily-suggestions', JSON.stringify({date: today, ids: daily}));
+}
+
+function render() {
+  renderHome();
+  renderSuppliers();
+  renderMaterials();
+}
+
+function renderHome() {
+  const latest = [...items].sort((a,b) => b.updatedAt-a.updatedAt).slice(0,5);
+  document.getElementById('latest').innerHTML = latest.map(i => `
+    <div class="h-card" data-item-id="${i.id}">
+      <div class="fav-btn" data-id="${i.id}">${i.favorite?'❤️':'<span style="color:#fff">♡</span>'}</div>
+      <img src="${i.image}">
+      <div class="overlay">
+        <div class="tag">${i.category||'Sans catégorie'}</div>
+        <h3>${i.name}</h3>
+      </div>
+    </div>
+  `).join('');
+
+  const favs = items.filter(i => i.favorite).slice(0,3);
+  document.getElementById('favorites').innerHTML = favs.length ? favs.map(i => `
+    <div class="card" data-item-id="${i.id}">
+      <div class="fav-btn" data-id="${i.id}">❤️</div>
+      <img src="${i.image}">
+      <div class="overlay">
+        <div class="tag">${i.category||'Sans catégorie'}</div>
+        <h3>${i.name}</h3>
+      </div>
+    </div>
+  `).join('') : '<div class="empty"><h3>Aucun coup de cœur</h3></div>';
+
+  const dailyItems = items.filter(i => daily.includes(i.id));
+  console.log('📊 dailyItems trouvés:', dailyItems.length, '/', daily.length);
+  
+  document.getElementById('daily').innerHTML = dailyItems.length > 0 ? dailyItems.map(i => `
+    <div class="card" data-item-id="${i.id}">
+      <div class="fav-btn" data-id="${i.id}">${i.favorite?'❤️':'<span style="color:#fff">♡</span>'}</div>
+      <img src="${i.image}">
+      <div class="overlay">
+        <div class="tag">${i.category||'Sans catégorie'}</div>
+        <h3>${i.name}</h3>
+      </div>
+    </div>
+  `).join('') : '<div class="empty"><h3>Aucune découverte</h3><p>Importez vos données pour voir des suggestions</p></div>';
+
+  document.querySelectorAll('.fav-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      toggleFav(btn.dataset.id);
+    });
+  });
+
+  document.querySelectorAll('.h-card, .card').forEach(card => {
+    if (card.dataset.itemId) {
+      card.addEventListener('click', e => {
+        if (!e.target.classList.contains('fav-btn') && !e.target.closest('.fav-btn')) {
+          showDetailModal(card.dataset.itemId);
+        }
+      });
+    }
+  });
+}
+
+function renderSuppliers() {
+  const sups = items.filter(i => i.type==='supplier');
+  const cats = ['Tous',...new Set(sups.map(i => i.category).filter(Boolean))];
+  
+  document.getElementById('cat-suppliers').innerHTML = cats.map(c => 
+    `<div class="cat-chip ${c === activeCategorySuppliers ? 'active' : ''}" data-category="${c}">${c}</div>`
+  ).join('');
+
+  document.querySelectorAll('#cat-suppliers .cat-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      activeCategorySuppliers = chip.dataset.category;
+      renderSuppliers();
+    });
+  });
+
+  // Suggestions du jour avec seed fixe
+  const today = new Date().toDateString();
+  let dailySeed = localStorage.getItem('daily-suppliers-seed');
+  let dailySeedDate = localStorage.getItem('daily-suppliers-date');
+  
+  if (dailySeedDate !== today) {
+    dailySeed = Math.random().toString();
+    localStorage.setItem('daily-suppliers-seed', dailySeed);
+    localStorage.setItem('daily-suppliers-date', today);
+  }
+  
+  const seededRandom = (seed, index) => {
+    const x = Math.sin(parseFloat(seed) + index) * 10000;
+    return x - Math.floor(x);
+  };
+  
+  const supsWithSeeds = sups.map((s, i) => ({ item: s, seed: seededRandom(dailySeed, i) }));
+  const rand = supsWithSeeds.sort((a, b) => a.seed - b.seed).slice(0, 5).map(s => s.item);
+  
+  document.getElementById('disc-suppliers').innerHTML = rand.map(i => `
+    <div class="disc-card" data-item-id="${i.id}">
+      <img src="${i.image}">
+      <div class="name"><h4>${i.name}</h4></div>
+    </div>
+  `).join('');
+
+  const filteredSups = activeCategorySuppliers === 'Tous' ? sups : sups.filter(i => i.category === activeCategorySuppliers);
+
+  document.getElementById('pint-suppliers').innerHTML = filteredSups.map((i,idx) => `
+    <div class="pint-item ${idx%2===0?'tall':'short'}" data-item-id="${i.id}">
+      <div class="fav-btn" data-id="${i.id}">${i.favorite?'❤️':'<span style="color:#fff">♡</span>'}</div>
+      <img src="${i.image}">
+      <div class="info">
+        <h3>${i.name}</h3>
+        ${i.category?`<div class="tag">${i.category}</div>`:''}
+      </div>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('#disc-suppliers .disc-card').forEach(card => {
+    card.addEventListener('click', () => showDetailModal(card.dataset.itemId));
+  });
+
+  document.querySelectorAll('#pint-suppliers .pint-item').forEach(card => {
+    card.addEventListener('click', e => {
+      if (!e.target.classList.contains('fav-btn') && !e.target.closest('.fav-btn')) {
+        showDetailModal(card.dataset.itemId);
+      }
+    });
+  });
+
+  document.querySelectorAll('#pint-suppliers .fav-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      toggleFav(btn.dataset.id);
+    });
+  });
+}
+
+function renderMaterials() {
+  const mats = items.filter(i => i.type==='material');
+  const cats = ['Tous',...new Set(mats.map(i => i.category).filter(Boolean))];
+  
+  document.getElementById('cat-materials').innerHTML = cats.map(c => 
+    `<div class="cat-chip ${c === activeCategoryMaterials ? 'active' : ''}" data-category="${c}">${c}</div>`
+  ).join('');
+
+  document.querySelectorAll('#cat-materials .cat-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      activeCategoryMaterials = chip.dataset.category;
+      renderMaterials();
+    });
+  });
+
+  // Suggestions du jour avec seed fixe
+  const today = new Date().toDateString();
+  let dailySeed = localStorage.getItem('daily-materials-seed');
+  let dailySeedDate = localStorage.getItem('daily-materials-date');
+  
+  if (dailySeedDate !== today) {
+    dailySeed = Math.random().toString();
+    localStorage.setItem('daily-materials-seed', dailySeed);
+    localStorage.setItem('daily-materials-date', today);
+  }
+  
+  const seededRandom = (seed, index) => {
+    const x = Math.sin(parseFloat(seed) + index) * 10000;
+    return x - Math.floor(x);
+  };
+  
+  const matsWithSeeds = mats.map((m, i) => ({ item: m, seed: seededRandom(dailySeed, i) }));
+  const rand = matsWithSeeds.sort((a, b) => a.seed - b.seed).slice(0, 5).map(m => m.item);
+  
+  document.getElementById('disc-materials').innerHTML = rand.map(i => `
+    <div class="disc-card" data-item-id="${i.id}">
+      <img src="${i.image}">
+      <div class="name"><h4>${i.name}</h4></div>
+    </div>
+  `).join('');
+
+  const filteredMats = activeCategoryMaterials === 'Tous' ? mats : mats.filter(i => i.category === activeCategoryMaterials);
+
+  document.getElementById('pint-materials').innerHTML = filteredMats.map((i,idx) => `
+    <div class="pint-item ${idx%2===0?'tall':'short'}" data-item-id="${i.id}">
+      <div class="fav-btn" data-id="${i.id}">${i.favorite?'❤️':'<span style="color:#fff">♡</span>'}</div>
+      <img src="${i.image}">
+      <div class="info">
+        <h3>${i.name}</h3>
+        ${i.category?`<div class="tag">${i.category}</div>`:''}
+        ${i.price?`<div class="price">${i.price}</div>`:''}
+      </div>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('#disc-materials .disc-card').forEach(card => {
+    card.addEventListener('click', () => showDetailModal(card.dataset.itemId));
+  });
+
+  document.querySelectorAll('#pint-materials .pint-item').forEach(card => {
+    card.addEventListener('click', e => {
+      if (!e.target.classList.contains('fav-btn') && !e.target.closest('.fav-btn')) {
+        showDetailModal(card.dataset.itemId);
+      }
+    });
+  });
+
+  document.querySelectorAll('#pint-materials .fav-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      toggleFav(btn.dataset.id);
+    });
+  });
+}
+
+function toggleMenu() {
+  document.getElementById('menu').classList.toggle('active');
+}
+
+function toggleFav(id) {
+  const item = items.find(i => i.id===id);
+  if (item) {
+    item.favorite = !item.favorite;
+    render();
+  }
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function openSearch() {
+  document.getElementById('searchModal').classList.add('active');
+  document.getElementById('searchInput').focus();
+  document.body.classList.add('modal-open'); // Bloquer scroll
+}
+
+function closeSearch() {
+  document.getElementById('searchModal').classList.remove('active');
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchResults').innerHTML = '';
+  document.body.classList.remove('modal-open'); // Débloquer scroll
+}
+
+function performSearch() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const results = document.getElementById('searchResults');
+  
+  if (query.length < 1) {
+    results.innerHTML = '';
+    return;
+  }
+  
+  const found = items.filter(i => 
+    i.name.toLowerCase().includes(query) ||
+    (i.category && i.category.toLowerCase().includes(query))
+  );
+  
+  if (found.length === 0) {
+    results.innerHTML = '<div class="empty"><h3>Aucun résultat</h3></div>';
+  } else {
+    results.innerHTML = `<div class="pinterest">${found.map((i,idx) => `
+      <div class="pint-item ${idx%2===0?'tall':'short'}" data-item-id="${i.id}">
+        <div class="fav-btn" data-id="${i.id}">${i.favorite?'❤️':'<span style="color:#fff">♡</span>'}</div>
+        <img src="${i.image}">
+        <div class="info">
+          <h3>${i.name}</h3>
+          ${i.category?`<div class="tag">${i.category}</div>`:''}
+          ${i.price?`<div class="price">${i.price}</div>`:''}
+        </div>
+      </div>
+    `).join('')}</div>`;
+    
+    document.querySelectorAll('#searchResults .fav-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        toggleFav(btn.dataset.id);
+      });
+    });
+    
+    document.querySelectorAll('#searchResults .pint-item').forEach(card => {
+      card.addEventListener('click', e => {
+        if (!e.target.classList.contains('fav-btn') && !e.target.closest('.fav-btn')) {
+          showDetailModal(card.dataset.itemId);
+        }
+      });
+    });
+  }
+}
+
+function showDetailModal(itemId) {
+  const item = items.find(i => i.id === itemId);
+  if (!item) return;
+  
+  const modal = document.getElementById('detailModal');
+  const body = document.getElementById('detailBody');
+  
+  const metaTags = [];
+  if (item.category) metaTags.push(`<span class="meta-tag">${item.category}</span>`);
+  if (item.price) metaTags.push(`<span class="meta-tag">${item.price}</span>`);
+  
+  const details = [];
+  if (item.contact) details.push(`<p><strong>Fournisseur :</strong> ${item.contact}</p>`);
+  if (item.phone) details.push(`<p><strong>Téléphone :</strong> ${item.phone}</p>`);
+  if (item.email) details.push(`<p><strong>Email :</strong> ${item.email}</p>`);
+  if (item.website) details.push(`<p><strong>Site web :</strong> <a href="${item.website}" target="_blank">${item.website}</a></p>`);
+  if (item.description) details.push(`<p><strong>Description :</strong> ${item.description}</p>`);
+  
+  body.innerHTML = `
+    ${item.image ? `<img src="${item.image}" alt="${item.name}">` : ''}
+    <div class="detail-info">
+      <h1>${item.name}</h1>
+      ${metaTags.length > 0 ? `<div class="detail-meta">${metaTags.join('')}</div>` : ''}
+      ${details.join('')}
+    </div>
+    <div class="detail-actions">
+      <button class="edit-btn" id="editItemBtn">Modifier</button>
+    </div>
+  `;
+  
+  modal.classList.add('active');
+  
+  setTimeout(() => {
+    document.getElementById('editItemBtn').addEventListener('click', () => {
+      closeDetailModal();
+      editItem(item.id);
+    });
+  }, 0);
+}
+
+function closeDetailModal() {
+  document.getElementById('detailModal').classList.remove('active');
+}
+
+function openFavoritesModal() {
+  const favs = items.filter(i => i.favorite);
+  const modal = document.getElementById('favoritesModal');
+  const list = document.getElementById('favoritesList');
+  
+  if (favs.length === 0) {
+    list.innerHTML = `
+      <div class="favorites-empty">
+        <h2>Aucun favori</h2>
+        <p>Ajoutez vos matériaux et fournisseurs préférés en cliquant sur le cœur ♡</p>
+      </div>
+    `;
+  } else {
+    list.innerHTML = favs.map(item => `
+      <div class="favorite-slide">
+        <img src="${item.image}" alt="${item.name}">
+        <div class="info-overlay">
+          <div class="badge">${item.type === 'material' ? 'MATÉRIAU' : 'FOURNISSEUR'}</div>
+          <h2>${item.name}</h2>
+          ${item.contact ? `<p class="supplier">${item.contact}</p>` : ''}
+          ${item.description ? `<p class="description">${item.description}</p>` : ''}
+          ${item.category || item.price ? `<p class="description">${item.category ? item.category : ''}${item.category && item.price ? ' • ' : ''}${item.price ? item.price : ''}</p>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  modal.classList.add('active');
+  document.body.classList.add('modal-open'); // Bloquer scroll
+  toggleMenu();
+}
+
+function closeFavoritesModal() {
+  document.getElementById('favoritesModal').classList.remove('active');
+  document.body.classList.remove('modal-open'); // Débloquer scroll
+}
+
+function handleImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    uploadedImageUrl = event.target.result;
+    const uploadDiv = document.getElementById('imageUploadArea');
+    uploadDiv.innerHTML = `<img src="${uploadedImageUrl}" alt="Preview">`;
+    uploadDiv.classList.add('has-image');
+  };
+  reader.readAsDataURL(file);
+}
+
+function openAddForm() {
+  editingId = null;
+  selectedType = 'material';
+  uploadedImageUrl = '';
+  
+  document.getElementById('formTitle').textContent = 'Ajouter';
+  document.getElementById('submitBtn').textContent = 'Créer';
+  document.getElementById('addForm').reset();
+  
+  const uploadDiv = document.getElementById('imageUploadArea');
+  uploadDiv.innerHTML = `
+    <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" fill="none" stroke-width="2">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+      <circle cx="8.5" cy="8.5" r="1.5"/>
+      <polyline points="21 15 16 10 5 21"/>
+    </svg>
+    <p>Ajouter une photo</p>
+  `;
+  uploadDiv.classList.remove('has-image');
+  
+  selectType('material');
+  document.getElementById('addModal').classList.add('active');
+  document.getElementById('deleteBtn').style.display = 'none'; // Cacher le bouton supprimer
+}
+
+function closeAddForm() {
+  document.getElementById('addModal').classList.remove('active');
+  document.getElementById('addForm').reset();
+  uploadedImageUrl = '';
+  editingId = null;
+}
+
+function selectType(type) {
+  selectedType = type;
+  document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector(`.type-btn[data-type="${type}"]`).classList.add('active');
+  
+  document.querySelectorAll('.material-only').forEach(el => {
+    el.style.display = type === 'material' ? 'block' : 'none';
+  });
+  document.querySelectorAll('.supplier-only').forEach(el => {
+    el.style.display = type === 'supplier' ? 'block' : 'none';
+  });
+}
+
+function submitForm(e) {
+  e.preventDefault();
+  
+  const itemData = {
+    type: selectedType,
+    name: document.getElementById('itemName').value,
+    category: document.getElementById('itemCategory').value,
+    description: document.getElementById('itemDescription').value,
+    image: uploadedImageUrl || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%23' + Math.floor(Math.random()*16777215).toString(16) + '" width="400" height="300"/%3E%3C/svg%3E',
+    favorite: false,
+    updatedAt: Date.now()
+  };
+  
+  if (selectedType === 'material') {
+    itemData.contact = document.getElementById('itemSupplier').value;
+    itemData.price = document.getElementById('itemPrice').value;
+  }
+  
+  if (selectedType === 'supplier') {
+    itemData.phone = document.getElementById('itemPhone').value;
+    itemData.email = document.getElementById('itemEmail').value;
+    itemData.website = document.getElementById('itemWebsite').value;
+  }
+  
+  if (editingId) {
+    const index = items.findIndex(i => i.id === editingId);
+    if (index !== -1) {
+      items[index] = { ...items[index], ...itemData };
+      alert('✅ Modifié !');
+    }
+  } else {
+    itemData.id = Date.now().toString();
+    itemData.createdAt = Date.now();
+    items.push(itemData);
+    alert('✅ Ajouté !');
+  }
+  
+  localStorage.setItem('thecraft-items', JSON.stringify(items));
+  render();
+  closeAddForm();
+  
+  if (selectedType === 'material') {
+    switchTab('materials');
+  } else {
+    switchTab('suppliers');
+  }
+}
+
+function editItem(id) {
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+  
+  editingId = id;
+  selectedType = item.type;
+  uploadedImageUrl = item.image || '';
+  
+  document.getElementById('formTitle').textContent = 'Modifier';
+  document.getElementById('submitBtn').textContent = 'Enregistrer';
+  
+  document.getElementById('itemName').value = item.name || '';
+  document.getElementById('itemCategory').value = item.category || '';
+  document.getElementById('itemDescription').value = item.description || '';
+  
+  if (item.type === 'material') {
+    document.getElementById('itemSupplier').value = item.contact || '';
+    document.getElementById('itemPrice').value = item.price || '';
+  }
+  
+  if (item.type === 'supplier') {
+    document.getElementById('itemPhone').value = item.phone || '';
+    document.getElementById('itemEmail').value = item.email || '';
+    document.getElementById('itemWebsite').value = item.website || '';
+  }
+  
+  if (uploadedImageUrl) {
+    const uploadDiv = document.getElementById('imageUploadArea');
+    uploadDiv.innerHTML = `<img src="${uploadedImageUrl}" alt="Preview">`;
+    uploadDiv.classList.add('has-image');
+  }
+  
+  selectType(item.type);
+  document.getElementById('addModal').classList.add('active');
+  document.getElementById('deleteBtn').style.display = 'block'; // Afficher le bouton supprimer
+}
+
+function syncToiCloud() {
+  toggleMenu();
+  
+  // Séparer matériaux et fournisseurs
+  const materials = items.filter(i => i.type === 'material');
+  const suppliers = items.filter(i => i.type === 'supplier');
+  
+  // Sauvegarder en localStorage
+  localStorage.setItem('thecraft-items', JSON.stringify(items));
+  
+  // Télécharger materials.json
+  const blobMat = new Blob([JSON.stringify(materials, null, 2)], {type: 'application/json'});
+  const urlMat = URL.createObjectURL(blobMat);
+  const aMat = document.createElement('a');
+  aMat.href = urlMat;
+  aMat.download = 'materials.json';
+  aMat.click();
+  URL.revokeObjectURL(urlMat);
+  
+  // Télécharger suppliers.json
+  setTimeout(() => {
+    const blobSup = new Blob([JSON.stringify(suppliers, null, 2)], {type: 'application/json'});
+    const urlSup = URL.createObjectURL(blobSup);
+    const aSup = document.createElement('a');
+    aSup.href = urlSup;
+    aSup.download = 'suppliers.json';
+    aSup.click();
+    URL.revokeObjectURL(urlSup);
+    
+    alert('☁️ Sync iCloud\n\n✅ 2 fichiers téléchargés\n📦 ' + materials.length + ' matériaux\n🏢 ' + suppliers.length + ' fournisseurs\n\n📍 IMPORTANT :\n1. Va dans Fichiers → Téléchargements\n2. Sélectionne les 2 fichiers\n3. Déplace vers :\n   iCloud Drive/TheCraftLibrary/Base de données/\n4. Remplace les anciens\n\n✅ Tes fichiers iCloud seront synchronisés sur tous tes appareils Apple !');
+  }, 500);
+}
+
+function backupData() {
+  toggleMenu();
+  
+  const blob = new Blob([JSON.stringify(items, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const date = new Date().toISOString().split('T')[0];
+  a.download = 'thecraft-backup-' + date + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  alert('💾 Backup créé !\n\n📥 Fichier téléchargé : thecraft-backup-' + date + '.json\n\n📦 ' + items.length + ' items sauvegardés\n\n💡 Garde ce fichier précieusement pour restaurer tes données si besoin');
+}
+
+function exportData() {
+  toggleMenu();
+  
+  // Sauvegarder en localStorage
+  localStorage.setItem('thecraft-items', JSON.stringify(items));
+  
+  // Vérifier que ça a bien marché
+  const stored = localStorage.getItem('thecraft-items');
+  const materials = items.filter(i => i.type === 'material');
+  const suppliers = items.filter(i => i.type === 'supplier');
+  
+  if (stored) {
+    alert('✅ Synchronisation automatique réussie !\n\n💾 ' + items.length + ' items sauvegardés localement\n📦 ' + materials.length + ' matériaux\n🏢 ' + suppliers.length + ' fournisseurs\n\n✅ Tes données sont sécurisées sur ton iPhone');
+  } else {
+    alert('⚠️ Problème de sauvegarde\n\nVérifie dans Réglages → Safari :\n- "Bloquer tous les cookies" doit être DÉSACTIVÉ\n- Ne pas être en navigation privée');
+  }
+}
+
+
+
+function importData() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const newItems = JSON.parse(ev.target.result);
+        let added = 0;
+        let updated = 0;
+        
+        newItems.forEach(newItem => {
+          const existingIndex = items.findIndex(i => i.id === newItem.id);
+          if (existingIndex >= 0) {
+            items[existingIndex] = newItem;
+            updated++;
+          } else {
+            items.push(newItem);
+            added++;
+          }
+        });
+        
+        localStorage.setItem('thecraft-items', JSON.stringify(items));
+        loadDaily();
+        render();
+        
+        let msg = '✅ Import réussi !\n';
+        if (added > 0) msg += `${added} nouveaux\n`;
+        if (updated > 0) msg += `${updated} mis à jour\n`;
+        msg += `Total : ${items.length}`;
+        alert(msg);
+      } catch(err) {
+        alert('❌ Erreur: fichier JSON invalide');
+        console.error(err);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+  toggleMenu();
+}
+
+init();
+</script>
+<script>
+// Enregistrer le Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then((registration) => {
+        console.log('✅ Service Worker enregistré:', registration.scope);
+      })
+      .catch((error) => {
+        console.log('❌ Erreur Service Worker:', error);
+      });
+  });
+}
+</script>
+</body>
+</html>
