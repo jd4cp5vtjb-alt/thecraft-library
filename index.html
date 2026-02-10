@@ -12,10 +12,9 @@
 <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
 <link rel="icon" type="image/png" sizes="16x16" href="icon.png">
-<title>TheCraft Library V2.9.1</title>
+<title>TheCraft Library V2.10</title>
 <link rel="manifest" href="manifest.json">
 <style>
-/* 🔥 V2.9.1 - Cache Buster 2026-02-10 20:00 🔥 */
 /* ========================================
    🎨 SYSTÈME DE THÈMES UNIFIÉ
    Change juste les variables → Tout change !
@@ -287,77 +286,21 @@ box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
 .cat-chip:hover { background:rgba(255,255,255,0.35); }
 .cat-chip.active { background:rgba(255,255,255,0.45); border-color:#fff; }
 
-/* Grille matériaux - Image dominante */
-.material-grid {
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-gap: 12px;
-padding: 0 16px;
-}
-@media (min-width: 600px) {
-.material-grid {
-grid-template-columns: repeat(3, 1fr);
-}
-}
-@media (min-width: 900px) {
-.material-grid {
-grid-template-columns: repeat(4, 1fr);
-}
-}
-
-.material-card {
-aspect-ratio: 1;
-border-radius: 20px;
-overflow: hidden;
-position: relative;
-cursor: pointer;
-background: var(–card);
-border: 1px solid var(–border);
-box-shadow: 0 2px 12px var(–shadow);
-transition: transform 0.2s, box-shadow 0.2s;
-}
-.material-card:active {
-transform: scale(0.97);
-}
-.material-card img {
-width: 100%;
-height: 100%;
-object-fit: cover;
-display: block;
-}
-.material-card .overlay {
-position: absolute;
-bottom: 0;
-left: 0;
-right: 0;
-background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-padding: 16px 12px 12px 12px;
-color: #fff;
-}
-.material-card h3 {
-font-size: 1em;
-font-weight: 700;
-margin: 0;
-text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-.material-card .fav-btn {
-position: absolute;
-top: 12px;
-right: 12px;
-font-size: 1.5em;
-cursor: pointer;
-z-index: 2;
-filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
-user-select: none;
-transition: transform 0.2s;
-}
-.material-card .fav-btn:active {
-transform: scale(0.9);
-}
-
-/* Ancien style Pinterest (gardé pour recherche) */
 .pinterest { padding:0 16px; column-count:2; column-gap:16px; }
 @media (min-width:600px) { .pinterest { column-count:3; } }
+
+/* Grille matériaux/fournisseurs V2.8 */
+.material-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; padding:0 16px; }
+@media (min-width:600px) { .material-grid { grid-template-columns:repeat(3,1fr); } }
+@media (min-width:900px) { .material-grid { grid-template-columns:repeat(4,1fr); } }
+.material-card { aspect-ratio:1; border-radius:20px; overflow:hidden; position:relative; cursor:pointer; background:var(–card); border:1px solid var(–border); box-shadow:0 2px 12px var(–shadow); transition:transform 0.2s; }
+.material-card:active { transform:scale(0.97); }
+.material-card img { width:100%; height:100%; object-fit:cover; }
+.material-card .overlay { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top,rgba(0,0,0,0.7),transparent); padding:16px 12px 12px; color:#fff; }
+.material-card h3 { font-size:1em; font-weight:700; margin:0; text-shadow:0 2px 4px rgba(0,0,0,0.3); }
+.material-card .fav-btn { position:absolute; top:12px; right:12px; font-size:1.5em; cursor:pointer; z-index:2; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.4)); user-select:none; transition:transform 0.2s; }
+.material-card .fav-btn:active { transform:scale(0.9); }
+
 .pint-item {
 break-inside: avoid;
 margin-bottom: 16px;
@@ -808,7 +751,7 @@ border-color: rgba(0,0,0,0.3);
     </div>
     <h2 class="section-title">Tous les fournisseurs</h2>
     <div class="cats"><div class="list" id="cat-suppliers"></div></div>
-    <div class="material-grid" id="pint-suppliers"></div>
+    <div class="pinterest" id="pint-suppliers"></div>
   </div>
 
   <div class="tab-content" id="materials">
@@ -822,7 +765,7 @@ border-color: rgba(0,0,0,0.3);
     </div>
     <h2 class="section-title">Tous les matériaux</h2>
     <div class="cats"><div class="list" id="cat-materials"></div></div>
-    <div class="material-grid" id="pint-materials"></div>
+    <div class="pinterest" id="pint-materials"></div>
   </div>
 </main>
 
@@ -1238,7 +1181,7 @@ function renderHome() {
   
   document.getElementById('daily').innerHTML = dailyItems.length > 0 ? dailyItems.map(i => `
     <div class="card" data-item-id="${i.id}">
-      <div class="fav-btn" data-id="${i.id}">${i.favorite ? '❤️' : '♡'}</div>
+      <div class="fav-btn" data-id="${i.id}">${i.favorite?'❤️':'<span style="color:#fff">♡</span>'}</div>
       <img src="${i.image}">
       <div class="overlay">
         <div class="tag">${i.category||'Sans catégorie'}</div>
@@ -1308,12 +1251,13 @@ function renderSuppliers() {
 
   const filteredSups = activeCategorySuppliers === 'Tous' ? sups : sups.filter(i => i.category === activeCategorySuppliers);
 
-  document.getElementById('pint-suppliers').innerHTML = filteredSups.map(i => `
-    <div class="material-card" data-item-id="${i.id}">
-      <div class="fav-btn" data-id="${i.id}">${i.favorite ? '❤️' : '♡'}</div>
-      <img src="${i.image}" alt="${i.name}">
-      <div class="overlay">
+  document.getElementById('pint-suppliers').innerHTML = filteredSups.map((i,idx) => `
+    <div class="pint-item ${idx%2===0?'tall':'short'}" data-item-id="${i.id}">
+      <div class="fav-btn" data-id="${i.id}">${i.favorite?'❤️':'<span style="color:#fff">♡</span>'}</div>
+      <img src="${i.image}">
+      <div class="info">
         <h3>${i.name}</h3>
+        ${i.category?`<div class="tag">${i.category}</div>`:''}
       </div>
     </div>
   `).join('');
@@ -1322,7 +1266,7 @@ function renderSuppliers() {
     card.addEventListener('click', () => showDetailModal(card.dataset.itemId));
   });
 
-  document.querySelectorAll('#pint-suppliers .material-card').forEach(card => {
+  document.querySelectorAll('#pint-suppliers .pint-item').forEach(card => {
     card.addEventListener('click', e => {
       if (!e.target.classList.contains('fav-btn') && !e.target.closest('.fav-btn')) {
         showDetailModal(card.dataset.itemId);
@@ -1381,12 +1325,14 @@ function renderMaterials() {
 
   const filteredMats = activeCategoryMaterials === 'Tous' ? mats : mats.filter(i => i.category === activeCategoryMaterials);
 
-  document.getElementById('pint-materials').innerHTML = filteredMats.map(i => `
-    <div class="material-card" data-item-id="${i.id}">
-      <div class="fav-btn" data-id="${i.id}">${i.favorite ? '❤️' : '♡'}</div>
-      <img src="${i.image}" alt="${i.name}">
-      <div class="overlay">
+  document.getElementById('pint-materials').innerHTML = filteredMats.map((i,idx) => `
+    <div class="pint-item ${idx%2===0?'tall':'short'}" data-item-id="${i.id}">
+      <div class="fav-btn" data-id="${i.id}">${i.favorite?'❤️':'<span style="color:#fff">♡</span>'}</div>
+      <img src="${i.image}">
+      <div class="info">
         <h3>${i.name}</h3>
+        ${i.category?`<div class="tag">${i.category}</div>`:''}
+        ${i.price?`<div class="price">${i.price}</div>`:''}
       </div>
     </div>
   `).join('');
@@ -1395,7 +1341,7 @@ function renderMaterials() {
     card.addEventListener('click', () => showDetailModal(card.dataset.itemId));
   });
 
-  document.querySelectorAll('#pint-materials .material-card').forEach(card => {
+  document.querySelectorAll('#pint-materials .pint-item').forEach(card => {
     card.addEventListener('click', e => {
       if (!e.target.classList.contains('fav-btn') && !e.target.closest('.fav-btn')) {
         showDetailModal(card.dataset.itemId);
@@ -1464,7 +1410,7 @@ function performSearch() {
   } else {
     results.innerHTML = `<div class="pinterest">${found.map((i,idx) => `
       <div class="pint-item ${idx%2===0?'tall':'short'}" data-item-id="${i.id}">
-        <div class="fav-btn" data-id="${i.id}">${i.favorite ? '❤️' : '♡'}</div>
+        <div class="fav-btn" data-id="${i.id}">${i.favorite?'❤️':'<span style="color:#fff">♡</span>'}</div>
         <img src="${i.image}">
         <div class="info">
           <h3>${i.name}</h3>
