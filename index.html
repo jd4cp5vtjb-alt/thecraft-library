@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
 <link rel="icon" type="image/png" sizes="16x16" href="icon.png">
-<title>TheCraft Library V3.1</title>
+<title>TheCraft Library V3.2</title>
 <link rel="manifest" href="manifest.json">
 <style>/* 🎨 TheCraft V3.1 - Sans variables CSS */
 
@@ -20,7 +20,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, “SF Pro Text”, “SF Pro Display”, system-ui, sans-serif !important;
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   }
@@ -34,6 +34,7 @@ background: #FFFFFF;
 color: #000000;
 min-height: 100vh;
 padding-bottom: 100px;
+font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 
 /* Mode SOMBRE automatique iOS */
@@ -55,7 +56,6 @@ color: #FFFFFF;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, “Segoe UI”, Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   }
@@ -273,25 +273,16 @@ box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
 .pinterest { padding:0 16px; column-count:2; column-gap:16px; }
 @media (min-width:600px) { .pinterest { column-count:3; } }
 
-/* Grille matériaux V2.8 - Image dominante */
+/* Grille matériaux V3.2 - FLEXBOX */
 .material-grid {
-display: grid;
-grid-template-columns: repeat(2, 1fr);
+display: flex;
+flex-wrap: wrap;
 gap: 12px;
 padding: 0 16px;
 }
-@media (min-width: 600px) {
-.material-grid {
-grid-template-columns: repeat(3, 1fr);
-}
-}
-@media (min-width: 900px) {
-.material-grid {
-grid-template-columns: repeat(4, 1fr);
-}
-}
 
 .material-card {
+width: calc(50% - 6px); /* 2 colonnes avec gap */
 border-radius: 20px;
 overflow: hidden;
 position: relative;
@@ -301,6 +292,19 @@ border: 1px solid rgba(255,255,255,0.2);
 box-shadow: 0 2px 12px rgba(0,0,0,0.5);
 transition: transform 0.2s;
 }
+
+@media (min-width: 600px) {
+.material-card {
+width: calc(33.333% - 8px); /* 3 colonnes */
+}
+}
+
+@media (min-width: 900px) {
+.material-card {
+width: calc(25% - 9px); /* 4 colonnes */
+}
+}
+
 @media (prefers-color-scheme: light) {
 .material-card {
 background: #FFFFFF;
