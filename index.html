@@ -5,9 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>TheCraft Library V3.3</title>
+<title>TheCraft Library V3.4</title>
 <style>
-/* V3.3 - SANS calc() */
+/* V3.4 - CORRECTION ASTERISQUE */
 
 - {
   margin: 0;
@@ -44,12 +44,12 @@ color: #FFFFFF;
 .material-grid {
 display: flex;
 flex-wrap: wrap;
-padding: 0 10px; /* Padding réduit */
+padding: 0 10px;
 }
 
 .material-card {
-width: 49%; /* Simple % au lieu de calc */
-margin: 0.5%; /* Margin au lieu de gap */
+width: 49%;
+margin: 0.5%;
 border-radius: 20px;
 overflow: hidden;
 position: relative;
@@ -68,7 +68,6 @@ box-shadow: 0 2px 12px rgba(0,0,0,0.5);
 }
 }
 
-/* Ratio 1:1 */
 .material-card::before {
 content: ‘’;
 display: block;
@@ -106,7 +105,6 @@ margin: 0;
 text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* FAV BUTTON */
 .material-card .fav-btn {
 position: absolute;
 top: 12px;
@@ -123,7 +121,6 @@ transition: transform 0.2s;
 transform: scale(0.9);
 }
 
-/* 3 colonnes tablet */
 @media (min-width: 600px) {
 .material-card {
 width: 32.66%;
@@ -131,7 +128,6 @@ margin: 0.5%;
 }
 }
 
-/* 4 colonnes desktop */
 @media (min-width: 900px) {
 .material-card {
 width: 24%;
@@ -139,7 +135,6 @@ margin: 0.5%;
 }
 }
 
-/* RESTE DU CSS SIMPLIFIÉ */
 h1 {
 font-size: 2em;
 font-weight: 800;
@@ -156,7 +151,6 @@ margin: 20px;
 margin-bottom: 40px;
 }
 
-/* MENU BURGER */
 .menu-btn {
 position: fixed;
 top: 20px;
@@ -197,7 +191,6 @@ background: rgba(0,0,0,0.6);
 }
 }
 
-/* FAB */
 .fab {
 position: fixed;
 bottom: 20px;
@@ -237,7 +230,7 @@ opacity: 0.6;
   <span></span>
 </button>
 
-<h1>📦 TheCraft Library V3.3</h1>
+<h1>📦 TheCraft Library V3.4</h1>
 
 <div class="section">
   <h2>Test Grille</h2>
@@ -273,7 +266,7 @@ opacity: 0.6;
   </div>
 
   <p style="text-align:center;margin:30px 20px;font-size:1.1em;">
-    ✅ Si tu vois 2 colonnes de 2 tuiles = V3.3 marche !
+    ✅ Si tu vois 2 colonnes de 2 tuiles = V3.4 marche !
   </p>
 </div>
 
